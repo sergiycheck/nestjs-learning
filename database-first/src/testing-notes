@@ -1,0 +1,22 @@
+//the solution is to create mock repositories.
+//we set up custom providers.
+//Each registered repository is automatically represented by an <EntityName>Repository token, where EntityName is the name of your entity class.
+
+//the @nestjs/typeorm exposes getRepositoryToken()
+
+const mockRepository = {}
+
+@Module({
+	provide: [
+		UsersService,
+		{
+			provide: getRepositoryToken(User),
+			useValue: mockRepository,
+		}
+	]
+})
+export class UsersModule{}
+
+//now a substitute mockRepository will be used as the UsersRepository. Whenever any class asks for UsersRepository 
+//using an @InjectRepository() decorator, Nest will use the registered mockRepository object.
+

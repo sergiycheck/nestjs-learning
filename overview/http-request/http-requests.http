@@ -1,0 +1,84 @@
+GET http://localhost:3000/default HTTP/1.1
+
+###
+
+
+GET http://localhost:3000/cats/get-library-specific HTTP/1.1
+
+####
+
+GET http://localhost:3000/cats/library-specific-response HTTP/1.1
+
+
+####
+
+
+GET http://localhost:3000/cats/observable-values HTTP/1.1
+
+
+### cats without params
+GET http://localhost:3000/cats/all HTTP/1.1
+
+
+### cats with params
+GET http://localhost:3000/cats/all?page=1 HTTP/1.1
+
+
+###
+
+POST http://localhost:3000/cats HTTP/1.1
+content-type: application/json
+
+{
+	"name": "cat name 1",
+	"age": 1,
+	"breed": "breed value 1"
+}
+
+###
+GET http://localhost:3000/cats/get-library-specific HTTP/1.1
+
+###
+GET http://localhost:3000/cats/docs HTTP/1.1
+
+###
+GET http://localhost:3000/cats/give-me-error?type=forbidden HTTP/1.1
+
+###
+GET http://localhost:3000/cats/give-me-error?type=wef HTTP/1.1
+
+###
+#find cat by int id valid
+GET http://localhost:3000/cats/123 HTTP/1.1
+
+####
+#find cat by int id invalid
+GET http://localhost:3000/cats/notIntValue HTTP/1.1
+
+###
+#query find cat by int id valid
+GET http://localhost:3000/cats?id=123 HTTP/1.1
+
+####
+#query find cat by int id invalid
+GET http://localhost:3000/cats?id=notIntValue HTTP/1.1
+
+###
+## create cat with joi validation
+POST http://localhost:3000/cats/validate-cat-joi HTTP/1.1
+content-type: application/json
+
+{
+	"name": "cat name 1",
+	"age": 2,
+	"breed": "breed value 1"
+}
+
+###
+
+## find one cat with custom pipe validation
+
+GET http://localhost:3000/cats/custom-pipe/122 HTTP/1.1
+
+###
+GET http://localhost:3000/cats/give-me-error-timeout?timeout=3000 HTTP/1.1

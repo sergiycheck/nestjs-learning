@@ -1,0 +1,28 @@
+GET http://localhost:3000/message-from-config-service HTTP/1.1
+
+###
+GET http://localhost:3000 HTTP/1.1
+
+###
+
+GET http://localhost:3000/constructor-call HTTP/1.1
+
+###
+GET http://localhost:3000/scope-request/constructor-call HTTP/1.1
+
+###
+GET http://localhost:3000/scope-transient/constructor-call HTTP/1.1
+
+###
+GET http://localhost:3000/transient-service-counter HTTP/1.1
+
+###
+GET http://localhost:3000/scope-default/transient-service-counter HTTP/1.1
+
+###
+GET http://localhost:3000/scope-default/default-service-counter HTTP/1.1
+
+###
+GET http://localhost:3000/default-service-counter HTTP/1.1
+
+###
