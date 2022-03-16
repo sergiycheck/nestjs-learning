@@ -9,7 +9,9 @@ import { CustomEventModule } from './cutom-event/custom-event.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/techniques-mongo-db-1'),
+    MongooseModule.forRootAsync({
+      useFactory: () => ({ uri: 'mongodb://localhost/techniques-mongo-db-1' }),
+    }),
     CatModule,
     CustomEventModule,
   ],
