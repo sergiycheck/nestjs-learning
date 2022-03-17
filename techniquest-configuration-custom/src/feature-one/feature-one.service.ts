@@ -5,6 +5,7 @@ interface EnvironmentVariables {
   USERNAME: string;
   PORT: number;
   DATABASE: string;
+  SUPPORT_EMAIL: string;
 }
 
 @Injectable()
@@ -18,7 +19,14 @@ export class FeatureOneService {
     // // Argument of type '"URL"' is not assignable to parameter of type 'keyof EnvironmentVariables'.
     // // const url = this.configService.get<string>('URL');
 
-    console.log('dbUser ', dbUser, ' db name', dbName);
+    console.log(
+      'dbUser ',
+      dbUser,
+      ' db name',
+      dbName,
+      ' support email ',
+      this.configService.get('SUPPORT_EMAIL'),
+    );
 
     //app.module-load-db-config.ts
     // console.log(
