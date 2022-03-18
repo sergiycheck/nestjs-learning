@@ -2,6 +2,8 @@ import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { LocalAuthGuard } from './auth/local-auth.guard';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { Public } from './metadata.decorators';
 
 @Controller()
 export class AppController {
@@ -10,6 +12,7 @@ export class AppController {
     private authService: AuthService,
   ) {}
 
+  @Public()
   @Get()
   getHello(): string {
     return this.appService.getHello();
@@ -23,6 +26,7 @@ export class AppController {
   //our passport local strategy has a default name of 'local'
   //we reference that name in the @UseGuards() decorator and associate it with
   //code supplied by the passport-local package.
+  @Public()
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
@@ -31,5 +35,14 @@ export class AppController {
       message: 'successfully logged in ',
       user_jwt: access_token,
     };
+  }
+
+  //when our GET/profile route is hit, the Guard will automatically invoke
+  // our passport-jwt custom configured logic, validating the JWT, and assigning the user property to the
+  // Request object
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
 }
