@@ -2,17 +2,32 @@ import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 
-@Injectable()
+@Injectable() // PassportStrategy(Strategy, 'myjwt') //provide a name
 export class LocalStrategy extends PassportStrategy(Strategy) {
-  constructor(private authService: AuthService) {
-    super();
+  // dynamically resolve request-scoped providers within the strategy. we leverage the
+  // module reference feature.
+
+  constructor(
+    // private authService: AuthService,
+    private moduleRef: ModuleRef,
+  ) {
+    super({
+      passReqToCallBack: true,
+    });
   }
 
   // Passport automatically creates a user object, based on the value we return from the validate()
   // method, and assigns it to the Request object as req.user
-  async validate(username: string, password: string) {
-    const user = await this.authService.validateUser(username, password);
+  async validate(username: string, password: string, request: Request) {
+    const contextId = ContextIdFactory.getByRequest(request);
+
+    //resolve() with asynchronously return the request-scoped instance of
+    //the AuthService provider (we assumed that AuthService is marked as a request-scoped provider)
+    const authService = await this.moduleRef.resolve(AuthService, contextId);
+
+    const user = await authService.validateUser(username, password);
 
     if (!user) {
       throw new UnauthorizedException();
