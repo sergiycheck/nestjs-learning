@@ -13,15 +13,16 @@ import { Role } from 'src/authorization/roles.enum';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Public } from 'src/auth/metadata.decorators';
+// import { AppGlobalCustomGuard } from 'src/authorization/app-global-custom.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/authorization/roles.guard';
 
 @Controller('cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
-  @UseGuards(LocalAuthGuard, JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Post()
   @Roles(Role.Admin)
   create(@Body() createCatDto: CreateCatDto) {

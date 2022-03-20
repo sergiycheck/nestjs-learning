@@ -9,9 +9,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PRIVATE_JWT_KEY } from './constants';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { CaslModule } from 'src/casl/casl.module';
 
 @Module({
   imports: [
+    CaslModule,
     UsersModule,
     PassportModule,
     JwtModule.register({
@@ -25,6 +27,7 @@ import { JwtAuthGuard } from './jwt-auth.guard';
     JwtStrategy,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
   ],
+
   exports: [AuthService],
   controllers: [AuthController],
 })

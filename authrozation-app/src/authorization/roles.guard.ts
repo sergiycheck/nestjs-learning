@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
+// import { CaslAbilityFactory } from 'src/casl/casl-ability.factory';
 import { ROLES_KEY } from './roles.decorator';
 import { Role } from './roles.enum';
 
@@ -31,19 +32,3 @@ export class RolesGuard implements CanActivate {
     return isAccessed;
   }
 }
-
-//TODO: get user from jwt token
-
-// @Injectable()
-// export class AppGlobalCustomGuard implements CanActivate {
-//   constructor(private jwtGuard: JwtAuthGuard, private rolesGuard: RolesGuard) {}
-
-//   canActivate(context: ExecutionContext) {
-//     const canBeJwtActivated = this.jwtGuard.canActivate(context);
-
-//     const canBeRoleActivated = this.rolesGuard.canActivate(context);
-
-//     const res = canBeJwtActivated && canBeRoleActivated;
-//     return res;
-//   }
-// }
