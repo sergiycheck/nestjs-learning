@@ -14,7 +14,6 @@ import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { UpdateCatDto } from './dto/update-cat.dto';
 import { Public } from 'src/auth/metadata.decorators';
-// import { AppGlobalCustomGuard } from 'src/authorization/app-global-custom.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RolesGuard } from 'src/authorization/roles.guard';
 

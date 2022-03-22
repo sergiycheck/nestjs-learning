@@ -6,7 +6,7 @@ import {
   ExtractSubjectType,
 } from '@casl/ability';
 import { ActionAbility } from 'src/authorization/actions.enum';
-import { Article } from 'src/articles/entities/article.entity';
+import { Article } from 'src/article/entities/article.entity';
 import { User } from '../users/entities/user.entity';
 import { Injectable } from '@nestjs/common';
 
