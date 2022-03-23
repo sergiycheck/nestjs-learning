@@ -30,10 +30,11 @@ export class CaslAbilityFactory {
     can(ActionAbility.Update, Article, { authorId: user.userId });
     cannot(ActionAbility.Delete, Article, { isPublished: true });
 
-    return build({
+    const buildedAbility = build({
       // read https://casl.js.org/v5/en/guide/subject-type-detection#use-classes-as-subject-types for details
       detectSubjectType: (item) =>
         item.constructor as ExtractSubjectType<Subjects>,
     });
+    return buildedAbility;
   }
 }
