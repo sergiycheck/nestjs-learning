@@ -21,9 +21,9 @@ async function bootstrap() {
   // ConsoleLogger
   const app = await NestFactory.create(
     AppModule,
-    // , { bufferLogs: true }
+    { bufferLogs: true },
     // { logger: false }, // nothing will be logged until you call useLogger
-    { logger: ['error', 'warn'] },
+    // { logger: ['error', 'warn'] },
   );
   //retrieving singleton instance of a logger for use by Nest
   // app.useLogger(app.get(MyLogger));

@@ -27,8 +27,7 @@ export class CaslAbilityFactory {
       can(ActionAbility.Read, 'all'); //read-only access to everything
     }
 
-    const userId = user.userId;
-    can(ActionAbility.Update, Article, { authorId: userId });
+    can(ActionAbility.Update, Article, { authorId: user.userId });
     cannot(ActionAbility.Delete, Article, { isPublished: true });
 
     const buildedAbility = build({

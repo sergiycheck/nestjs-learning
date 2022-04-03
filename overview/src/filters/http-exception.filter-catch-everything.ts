@@ -8,6 +8,7 @@ import {
 
 import { HttpAdapterHost } from '@nestjs/core';
 
+//TODO: const { httpAdapter } = this.httpAdapterHost; httpAdapter is undefined when requesting  GET http://localhost:3000/users HTTP/1.1
 //in order to catch every
 //undandled exception, leave the @Catch() decorator's parameter
 // list empty

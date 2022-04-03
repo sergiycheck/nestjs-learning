@@ -12,10 +12,8 @@ import { CustomEventModule } from './cutom-event/custom-event.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule.register({ folder: './config' })],
       useFactory: async (configService: ConfigService) => {
-        //TODO: not working error
-        //Unable to connect to the database. Retrying (7)
         const uri = configService.get('MONGODB_URI');
-        return uri;
+        return { uri };
       },
       inject: [ConfigService],
     }),
