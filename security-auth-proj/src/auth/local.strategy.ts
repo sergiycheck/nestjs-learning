@@ -41,3 +41,11 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 //if it's not found we throw an exception and let our exception layer handle it.
 
 //validate() methods for each strategy deternine if a user exists and is valid
+
+
+// We can pass an options object in the call to super() to customize the behavior of the passport 
+//strategy. In this example, the passport-local strategy by default expects properties 
+//called username and password in the request body. Pass an options object to specify different 
+//property names, for example: super({ usernameField: 'email' })
+//passport docs
+//http://www.passportjs.org/concepts/authentication/strategies/
