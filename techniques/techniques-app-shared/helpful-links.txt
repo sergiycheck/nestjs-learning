@@ -1,0 +1,9 @@
+curl requests
+https://linuxize.com/post/curl-post-request/
+
+shell scripts
+https://www.shellscript.sh/
+
+file upload ****
+https://github.com/expressjs/multer#multeropts
+

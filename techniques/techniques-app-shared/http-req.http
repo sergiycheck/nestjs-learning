@@ -1,0 +1,7 @@
+
+###
+HTTP http://localhost:3000/file
+###
+HTTP http://localhost:3000/file/get-image?img=cat1-3bdd86c5-284e-41b6-9a5d-c381bbd08c2a.jpg
+
+###
