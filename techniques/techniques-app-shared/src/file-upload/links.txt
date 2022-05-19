@@ -3,3 +3,13 @@ https://vscode.dev/github/nestjs/nest/tree/master/sample/29-file-upload
 
 helpful link
 https://gabrieltanner.org/blog/nestjs-file-uploading-using-multer
+
+NodeJS: Uploading file to S3
+https://medium.com/@masnun/nodejs-uploading-file-to-s3-cbf74c2ec984
+
+aws s3 docs
+https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#putObject-property
+
+multer
+https://github.com/expressjs/multer#multeropts
+

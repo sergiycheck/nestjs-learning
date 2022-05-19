@@ -1,17 +1,21 @@
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
-import { editFileName, imageFileFilter, getFileKeyFromFile } from './file-upload.utils';
+import { getFileKeyFromFile } from './file-upload.utils';
 
 @Injectable()
 export class UploaderToS3Service {
   private BUCKET_NAME: string;
+  private IMAGES_PUBLIC_BUCKET: string;
+
   private IAM_USER_KEY_ID: string;
   private IAM_USER_SECRET_ACCESS_KEY;
   private s3bucket: AWS.S3;
 
   constructor(private configService: ConfigService) {
     this.BUCKET_NAME = this.configService.get('BUCKET_NAME');
+    this.IMAGES_PUBLIC_BUCKET = this.configService.get('IMAGES_PUBLIC_BUCKET');
+
     this.IAM_USER_KEY_ID = this.configService.get('IAM_USER_KEY_ID');
     this.IAM_USER_SECRET_ACCESS_KEY = this.configService.get('IAM_USER_SECRET_ACCESS_KEY');
 

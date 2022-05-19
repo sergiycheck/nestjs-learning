@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './root-module/app.module';
+//configuring dotenv breaks multer. Multer does not work with configured dotenv
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 

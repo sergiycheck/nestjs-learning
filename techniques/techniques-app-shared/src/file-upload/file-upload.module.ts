@@ -1,6 +1,8 @@
+import { DifferentUploadMethodsController } from './diff-upl-methods.controller';
+import { StoreLocallyController } from './store-file-locally.controller';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { AppController } from './app.controller';
+import { UploadS3Controller } from './upload-s3.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UploaderToS3Service } from './uploaderToS3.service';
 
@@ -35,7 +37,7 @@ import { UploaderToS3Service } from './uploaderToS3.service';
     //   inject: [ConfigService],
     // }),
   ],
-  controllers: [AppController],
+  controllers: [UploadS3Controller, StoreLocallyController, DifferentUploadMethodsController],
   providers: [UploaderToS3Service],
 })
 export class FileUploadAppModule {}
