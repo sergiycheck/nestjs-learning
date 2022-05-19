@@ -1,0 +1,6 @@
+Model Instances
+https://sequelize.org/docs/v6/core-concepts/model-instances/#deleting-an-instance
+
+sequelize-typescript
+https://github.com/RobinBuschmann/sequelize-typescript#one-to-many
+

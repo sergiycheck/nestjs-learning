@@ -13,6 +13,8 @@ export const getFileKeyFromFile = (file: Express.Multer.File) => {
   return `${name}-${randomUUID()}.${ext}`;
 };
 
+export const appendRandomIdWithHyphenToText = (text: string) => `${randomUUID()}-${text}`;
+
 const knownImageExtensionRegex = /\.(jpg|gif|jpe?g|tiff?|png|webp|bmp)$/;
 
 export const imageFileFilter = (
@@ -20,7 +22,8 @@ export const imageFileFilter = (
   file: Express.Multer.File,
   callback: (error: Error, acceptFile: boolean) => void,
 ) => {
-  if (!file?.originalname?.match(knownImageExtensionRegex))
+  if (!file?.originalname?.match(knownImageExtensionRegex)) {
     return callback(new Error('unknown image extension'), false);
+  }
   callback(null, true);
 };

@@ -1,4 +1,4 @@
-import { FileInfo } from './dtos/file-info.dto';
+import { FileInfo } from '../dtos/file-info.dto';
 import {
   Body,
   Controller,
@@ -12,7 +12,7 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { Response } from 'express';
-import { editFileName, imageFileFilter } from './file-upload.utils';
+import { editFileName, imageFileFilter } from '../file-upload.utils';
 
 @Controller('store-locally')
 export class StoreLocallyController {

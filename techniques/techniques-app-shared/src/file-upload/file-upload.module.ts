@@ -1,10 +1,12 @@
-import { DifferentUploadMethodsController } from './diff-upl-methods.controller';
-import { StoreLocallyController } from './store-file-locally.controller';
+import { PublicFile } from './entities/publicFile.entity';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { DifferentUploadMethodsController } from './file-upload-controllers/diff-upl-methods.controller';
+import { StoreLocallyController } from './file-upload-controllers/store-file-locally.controller';
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
-import { UploadS3Controller } from './upload-s3.controller';
+import { UploadS3Controller } from './file-upload-controllers/upload-s3.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { UploaderToS3Service } from './uploaderToS3.service';
+import { UploaderToS3Service } from './services/uploaderToS3.service';
 
 @Module({
   imports: [
@@ -36,8 +38,11 @@ import { UploaderToS3Service } from './uploaderToS3.service';
     //   },
     //   inject: [ConfigService],
     // }),
+
+    SequelizeModule.forFeature([PublicFile]),
   ],
   controllers: [UploadS3Controller, StoreLocallyController, DifferentUploadMethodsController],
   providers: [UploaderToS3Service],
+  exports: [UploaderToS3Service],
 })
 export class FileUploadAppModule {}
