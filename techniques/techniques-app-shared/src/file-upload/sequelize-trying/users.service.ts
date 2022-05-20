@@ -1,6 +1,11 @@
 import { UploaderToS3Service } from './../services/uploaderToS3.service';
-import { CreateUserDto, RemovePhotoDto } from './dtos.dto';
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -30,7 +35,33 @@ export class UsersService {
     return updatedRes;
   }
 
-  async removePhoto(removePhotoDto: RemovePhotoDto) {
+  async getOneRawPhotoOfUser(fileId: string) {
+    const data = await this.fileUploaderToS3.getPrivateFile(fileId);
+    return data;
+  }
+
+  async getUserWithRelationsAndPhotosLinks(userId: string) {
+    const userWithRelations = await (await this.findOneWithRelations(userId)).toJSON();
+
+    const mappedUserPhotos = await Promise.all(
+      userWithRelations.photos.map(async (photo) => {
+        const url = await this.fileUploaderToS3.getExpiredFileUrl(photo);
+        return {
+          ...photo,
+          expiredUrl: url,
+        };
+      }),
+    );
+
+    const { photos, ...userData } = userWithRelations;
+
+    return {
+      ...userData,
+      photos: mappedUserPhotos,
+    };
+  }
+
+  async removePhoto(removePhotoDto: UserIdWithFileIdDto) {
     const { userId, fileId } = removePhotoDto;
 
     const deleteResultFromS3AndLocal = await this.fileUploaderToS3.deletePublicFile(fileId);
@@ -54,11 +85,14 @@ export class UsersService {
     });
   }
 
-  findOneWithRelations(id: string): Promise<User> {
-    return this.userModel.findOne({
+  async findOneWithRelations(id: string): Promise<User> {
+    const userWithData = await this.userModel.findOne({
       where: { id },
       include: [PublicFile],
     });
+    if (!userWithData) throw new NotFoundException('user was not found');
+
+    return userWithData;
   }
 
   async remove(id: string): Promise<void> {

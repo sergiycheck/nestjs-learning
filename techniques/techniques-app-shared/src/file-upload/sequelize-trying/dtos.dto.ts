@@ -10,7 +10,7 @@ export class CreateUserDto {
   lastName: string;
 }
 
-export class RemovePhotoDto {
+export class UserIdWithFileIdDto {
   @IsNotEmpty()
   @IsString()
   userId: string;

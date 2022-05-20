@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UploaderToS3Service {
+  private AWS_REGION: string;
   private BUCKET_NAME: string;
   private IMAGES_PUBLIC_BUCKET: string;
 
@@ -20,6 +21,7 @@ export class UploaderToS3Service {
     @InjectModel(PublicFile)
     private fileModel: typeof PublicFile,
   ) {
+    this.AWS_REGION = this.configService.get('AWS_REGION');
     this.BUCKET_NAME = this.configService.get('BUCKET_NAME');
     this.IMAGES_PUBLIC_BUCKET = this.configService.get('IMAGES_PUBLIC_BUCKET');
 
@@ -27,6 +29,7 @@ export class UploaderToS3Service {
     this.IAM_USER_SECRET_ACCESS_KEY = this.configService.get('IAM_USER_SECRET_ACCESS_KEY');
 
     this.S3 = new AWS.S3({
+      region: this.AWS_REGION,
       accessKeyId: this.IAM_USER_KEY_ID,
       secretAccessKey: this.IAM_USER_SECRET_ACCESS_KEY,
     });
@@ -68,9 +71,39 @@ export class UploaderToS3Service {
     return newFile;
   }
 
-  async deletePublicFile(fileId: string) {
+  private async getOneFile(fileId: string) {
     const file = await this.fileModel.findByPk(fileId);
     if (!file) throw new NotFoundException(`${fileId} does not exist`);
+    return file;
+  }
+
+  public async getPrivateFile(fileId: string) {
+    const file = await this.getOneFile(fileId);
+
+    const params = {
+      Bucket: file.bucket,
+      Key: file.key,
+    };
+
+    const stream = this.S3.getObject(params).createReadStream();
+
+    return {
+      file,
+      stream,
+    };
+  }
+
+  public async getExpiredFileUrl(file: PublicFile) {
+    const params = {
+      Bucket: file.bucket,
+      Key: file.key,
+      Expires: 60 * 60, // 1-hour expiry time
+    };
+    return this.S3.getSignedUrlPromise('getObject', params);
+  }
+
+  async deletePublicFile(fileId: string) {
+    const file = await this.getOneFile(fileId);
 
     const params = {
       Bucket: file.bucket,
