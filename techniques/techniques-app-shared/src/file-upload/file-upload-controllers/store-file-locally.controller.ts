@@ -1,3 +1,4 @@
+import { ApiTags } from '@nestjs/swagger';
 import { FileInfo } from '../dtos/file-info.dto';
 import {
   Body,
@@ -14,6 +15,7 @@ import { diskStorage } from 'multer';
 import { Response } from 'express';
 import { editFileName, imageFileFilter } from '../file-upload.utils';
 
+@ApiTags('store-locally')
 @Controller('store-locally')
 export class StoreLocallyController {
   constructor() {}

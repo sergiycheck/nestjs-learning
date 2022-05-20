@@ -1,9 +1,11 @@
+import { ApiTags } from '@nestjs/swagger';
 import { FileInfo } from '../dtos/file-info.dto';
 import { Body, Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { UploaderToS3Service } from '../services/uploaderToS3.service';
 
+@ApiTags('file')
 @Controller('file')
 export class UploadS3Controller {
   constructor(private serviceUploadToS3: UploaderToS3Service) {}

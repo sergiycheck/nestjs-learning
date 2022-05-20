@@ -1,4 +1,4 @@
-import { ConfigService } from '@nestjs/config';
+import { ApiTags } from '@nestjs/swagger';
 import { FileInfo } from '../dtos/file-info.dto';
 import {
   Body,
@@ -7,23 +7,14 @@ import {
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
-  Get,
-  Query,
-  Res,
-  Injectable,
-  Req,
 } from '@nestjs/common';
 import {
   AnyFilesInterceptor,
   FileFieldsInterceptor,
   FileInterceptor,
-  FilesInterceptor,
 } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { Response } from 'express';
-import { editFileName, imageFileFilter, getFileKeyFromFile } from '../file-upload.utils';
-import { UploaderToS3Service } from '../services/uploaderToS3.service';
 
+@ApiTags('diff-upload-methods')
 @Controller('diff-upload-methods')
 export class DifferentUploadMethodsController {
   constructor() {}
