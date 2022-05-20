@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 //configuring dotenv breaks multer. Multer does not work with configured dotenv
 // import * as dotenv from 'dotenv';
 // dotenv.config();
+import * as cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -21,7 +22,7 @@ async function bootstrap() {
     .build();
   const doc = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, doc);
-
+  app.use(cors());
   await app.listen(3000);
   console.log(`App is running on ${await app.getUrl()}`);
 }

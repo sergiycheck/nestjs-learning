@@ -27,3 +27,14 @@ export const imageFileFilter = (
   }
   callback(null, true);
 };
+
+export const imageFileFilterIfFileExists = (
+  _,
+  file: Express.Multer.File,
+  callback: (error: Error, acceptFile: boolean) => void,
+) => {
+  if (file && !file?.originalname?.match(knownImageExtensionRegex)) {
+    return callback(new Error('unknown image extension'), false);
+  }
+  callback(null, true);
+};

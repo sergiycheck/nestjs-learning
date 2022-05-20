@@ -19,9 +19,11 @@ export class UsersService {
     private fileUploaderToS3: UploaderToS3Service,
   ) {}
 
-  async create(data: CreateUserDto) {
+  async create(data: CreateUserDto, uploadedFileData?: { fileBuffer: Buffer; filename: string }) {
     const user = await this.userModel.create({ ...data, id: uuidv4() });
-    return user;
+    if (!uploadedFileData) return user;
+
+    return this.addPhotos(user.id, uploadedFileData.fileBuffer, uploadedFileData.filename);
   }
 
   async addPhotos(userId: string, fileBuffer: Buffer, filename: string) {
@@ -31,8 +33,7 @@ export class UsersService {
     const photo = await this.fileUploaderToS3.uploadPublicFile(fileBuffer, filename, userId);
     if (!photo) throw new InternalServerErrorException({ message: 'photo is null' });
 
-    const updatedRes = await this.findOneWithRelations(userId);
-    return updatedRes;
+    return this.getUserWithRelationsAndPhotosLinks(userId);
   }
 
   async getOneRawPhotoOfUser(fileId: string) {
@@ -43,8 +44,12 @@ export class UsersService {
   async getUserWithRelationsAndPhotosLinks(userId: string) {
     const userWithRelations = await (await this.findOneWithRelations(userId)).toJSON();
 
+    return this.mapPopulateUserWithPhotos(userWithRelations);
+  }
+
+  private async mapPopulateUserWithPhotos(user: User) {
     const mappedUserPhotos = await Promise.all(
-      userWithRelations.photos.map(async (photo) => {
+      user.photos.map(async (photo) => {
         const url = await this.fileUploaderToS3.getExpiredFileUrl(photo);
         return {
           ...photo,
@@ -53,7 +58,7 @@ export class UsersService {
       }),
     );
 
-    const { photos, ...userData } = userWithRelations;
+    const { photos, ...userData } = user;
 
     return {
       ...userData,
@@ -65,7 +70,7 @@ export class UsersService {
     const { userId, fileId } = removePhotoDto;
 
     const deleteResultFromS3AndLocal = await this.fileUploaderToS3.deletePublicFile(fileId);
-    const updatedUser = await this.findOneWithRelations(userId);
+    const updatedUser = await this.getUserWithRelationsAndPhotosLinks(userId);
 
     return {
       deleteResult: deleteResultFromS3AndLocal,
@@ -73,8 +78,12 @@ export class UsersService {
     };
   }
 
-  async findAll(): Promise<User[]> {
-    return this.userModel.findAll({ include: [PublicFile] });
+  async findAll() {
+    const allUsers = await this.userModel.findAll({ include: [PublicFile] });
+
+    return Promise.all(
+      allUsers.map(async (user) => await this.mapPopulateUserWithPhotos(user.toJSON())),
+    );
   }
 
   findOne(id: string): Promise<User> {
@@ -95,8 +104,15 @@ export class UsersService {
     return userWithData;
   }
 
-  async remove(id: string): Promise<void> {
-    const user = await this.findOne(id);
-    await user.destroy();
+  async remove(id: string) {
+    const user = await this.findOneWithRelations(id);
+    const resDelFromS3 = await Promise.all(
+      user.photos.map(async (photo) => await this.fileUploaderToS3.deletePublicFile(photo.id)),
+    );
+    const resDelFromDb = await this.userModel.destroy({ where: { id } });
+    return {
+      resDelFromS3,
+      resDelFromDb,
+    };
   }
 }

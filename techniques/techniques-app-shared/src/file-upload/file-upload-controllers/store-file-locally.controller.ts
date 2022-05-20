@@ -1,3 +1,4 @@
+import { NotEmptyPipe } from './../../pipes/not-empty.pipe';
 import { ApiTags } from '@nestjs/swagger';
 import { FileInfo } from '../dtos/file-info.dto';
 import {
@@ -47,7 +48,7 @@ export class StoreLocallyController {
   }
 
   @Get('get-image')
-  getUploadedImage(@Query('img') searchText, @Res() res: Response) {
+  getUploadedImage(@Query('img', new NotEmptyPipe('img')) searchText, @Res() res: Response) {
     return res.sendFile(searchText, { root: './uploads' });
   }
 }

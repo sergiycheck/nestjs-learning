@@ -14,7 +14,7 @@ import {
   UploadedFile,
   Res,
 } from '@nestjs/common';
-import { imageFileFilter } from './../file-upload.utils';
+import { imageFileFilter, imageFileFilterIfFileExists } from './../file-upload.utils';
 import { ErrorsInterceptor } from './error.interceptor';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
@@ -25,8 +25,21 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post()
-  create(@Body() data: CreateUserDto) {
-    return this.usersService.create(data);
+  @UseInterceptors(
+    ErrorsInterceptor,
+    FileInterceptor('file', { fileFilter: imageFileFilterIfFileExists }),
+  )
+  create(@Body() data: CreateUserDto, @UploadedFile() file?: Express.Multer.File) {
+    let uploadedFileData = undefined;
+
+    if (file) {
+      uploadedFileData = {
+        fileBuffer: file?.buffer,
+        filename: file?.originalname,
+      };
+    }
+
+    return this.usersService.create(data, uploadedFileData);
   }
 
   @Post(':userId/add-photos')
