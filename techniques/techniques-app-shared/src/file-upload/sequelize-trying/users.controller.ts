@@ -1,4 +1,4 @@
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
 import { UsersService } from './users.service';
 import {
@@ -7,18 +7,19 @@ import {
   Query,
   Post,
   Body,
-  Put,
   Param,
   Delete,
   UseInterceptors,
   UploadedFile,
   Res,
+  UploadedFiles,
 } from '@nestjs/common';
 import { imageFileFilter, imageFileFilterIfFileExists } from './../file-upload.utils';
 import { ErrorsInterceptor } from './error.interceptor';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
 
+const maxFilesCountToUploadAtOnce = 10;
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
@@ -27,25 +28,18 @@ export class UsersController {
   @Post()
   @UseInterceptors(
     ErrorsInterceptor,
-    FileInterceptor('file', { fileFilter: imageFileFilterIfFileExists }),
+    FilesInterceptor('file[]', maxFilesCountToUploadAtOnce, {
+      fileFilter: imageFileFilterIfFileExists,
+    }),
   )
-  create(@Body() data: CreateUserDto, @UploadedFile() file?: Express.Multer.File) {
-    let uploadedFileData = undefined;
-
-    if (file) {
-      uploadedFileData = {
-        fileBuffer: file?.buffer,
-        filename: file?.originalname,
-      };
-    }
-
-    return this.usersService.create(data, uploadedFileData);
+  create(@Body() data: CreateUserDto, @UploadedFiles() files?: Array<Express.Multer.File>) {
+    return this.usersService.createUserWithManyPhotos(data, files);
   }
 
   @Post(':userId/add-photos')
   @UseInterceptors(ErrorsInterceptor, FileInterceptor('file', { fileFilter: imageFileFilter }))
   async addPhotos(@Param('userId') userId: string, @UploadedFile() file: Express.Multer.File) {
-    return this.usersService.addPhotos(userId, file.buffer, file.originalname);
+    return this.usersService.addOnePhoto(userId, file.buffer, file.originalname);
   }
 
   @Post('remove-photo')

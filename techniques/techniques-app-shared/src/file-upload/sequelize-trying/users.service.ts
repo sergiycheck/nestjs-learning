@@ -1,11 +1,6 @@
 import { UploaderToS3Service } from './../services/uploaderToS3.service';
 import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,18 +14,30 @@ export class UsersService {
     private fileUploaderToS3: UploaderToS3Service,
   ) {}
 
-  async create(data: CreateUserDto, uploadedFileData?: { fileBuffer: Buffer; filename: string }) {
+  async create(data: CreateUserDto, file?: Express.Multer.File) {
     const user = await this.userModel.create({ ...data, id: uuidv4() });
-    if (!uploadedFileData) return user;
+    if (!file) return user;
 
-    return this.addPhotos(user.id, uploadedFileData.fileBuffer, uploadedFileData.filename);
+    return this.addOnePhoto(user.id, file.buffer, file.originalname);
   }
 
-  async addPhotos(userId: string, fileBuffer: Buffer, filename: string) {
-    const user = await this.userModel.findByPk(userId);
-    if (!user) throw new NotFoundException(`${userId} does not exist`);
+  async createUserWithManyPhotos(data: CreateUserDto, files?: Array<Express.Multer.File>) {
+    const user = await this.userModel.create({ ...data, id: uuidv4() });
+    if (!files.length) return user;
+    return this.addManyPhotos(user.id, files);
+  }
 
-    const photo = await this.fileUploaderToS3.uploadPublicFile(fileBuffer, filename, userId);
+  async addManyPhotos(userId: string, files: Array<Express.Multer.File>) {
+    const user = await this.findOne(userId);
+    await this.fileUploaderToS3.uploadMultiplePublicFiles(files, user.id);
+
+    return this.getUserWithRelationsAndPhotosLinks(userId);
+  }
+
+  async addOnePhoto(userId: string, fileBuffer: Buffer, filename: string) {
+    const user = await this.findOne(userId);
+
+    const photo = await this.fileUploaderToS3.uploadPublicFile(fileBuffer, filename, user.id);
     if (!photo) throw new InternalServerErrorException({ message: 'photo is null' });
 
     return this.getUserWithRelationsAndPhotosLinks(userId);
@@ -86,12 +93,10 @@ export class UsersService {
     );
   }
 
-  findOne(id: string): Promise<User> {
-    return this.userModel.findOne({
-      where: {
-        id,
-      },
-    });
+  async findOne(id: string): Promise<User> {
+    const user = await this.userModel.findByPk(id);
+    if (!user) throw new NotFoundException(`${id} does not exist`);
+    return user;
   }
 
   async findOneWithRelations(id: string): Promise<User> {

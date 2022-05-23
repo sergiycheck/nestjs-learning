@@ -71,6 +71,35 @@ export class UploaderToS3Service {
     return newFile;
   }
 
+  async uploadMultiplePublicFiles(files: Array<Express.Multer.File>, userId: string) {
+    const uploadedResults = await Promise.all(
+      files.map(async (file) => {
+        const params = {
+          Body: file.buffer,
+          Bucket: this.IMAGES_PUBLIC_BUCKET,
+          Key: appendRandomIdWithHyphenToText(file.originalname),
+        };
+
+        const uploadResult = await this.S3.upload(params).promise();
+
+        return uploadResult;
+      }),
+    );
+
+    const fileModelsToBulkCreate = uploadedResults.map((uploadResult) => ({
+      id: uuidv4(),
+      url: uploadResult.Location,
+      key: uploadResult.Key,
+      bucket: uploadResult.Bucket,
+      eTag: uploadResult.ETag,
+      userId,
+    }));
+
+    const newFiles = await this.fileModel.bulkCreate(fileModelsToBulkCreate);
+
+    return newFiles;
+  }
+
   private async getOneFile(fileId: string) {
     const file = await this.fileModel.findByPk(fileId);
     if (!file) throw new NotFoundException(`${fileId} does not exist`);

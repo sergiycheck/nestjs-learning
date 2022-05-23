@@ -1,4 +1,3 @@
-import { Sequelize } from 'sequelize-typescript';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './root-module/app.module';

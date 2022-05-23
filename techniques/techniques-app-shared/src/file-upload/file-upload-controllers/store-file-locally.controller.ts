@@ -19,8 +19,6 @@ import { editFileName, imageFileFilter } from '../file-upload.utils';
 @ApiTags('store-locally')
 @Controller('store-locally')
 export class StoreLocallyController {
-  constructor() {}
-
   @Post('multiple-images')
   @UseInterceptors(
     FilesInterceptor('image', 20, {
