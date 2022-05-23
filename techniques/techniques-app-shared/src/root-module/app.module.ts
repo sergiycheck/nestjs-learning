@@ -1,3 +1,5 @@
+import { CronTasksSchedulingModule } from './../task-scheduling/task-scheduling.module';
+import { VersioningModule } from './../versioning/verioning.module';
 import { UsersModule } from './../file-upload/sequelize-trying/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { FileUploadAppModule } from './../file-upload/file-upload.module';
@@ -7,9 +9,11 @@ import { AppService } from './app.service';
 import * as Joi from 'joi';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SequelizeConfigService } from '../file-upload/sequelize-trying/sequelize-config.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    // file-upload start
     ConfigModule.forRoot({
       cache: true,
       expandVariables: true,
@@ -29,26 +33,20 @@ import { SequelizeConfigService } from '../file-upload/sequelize-trying/sequeliz
     }),
 
     SequelizeModule.forRootAsync({
-      // imports: [ConfigModule],
-      // useFactory: (configService: ConfigService) => ({
-      //   dialect: 'postgres',
-      //   host: configService.get('PG_DB_HOST'),
-      //   port: +configService.get('PG_DB_PORT'),
-      //   username: configService.get('PG_DB_USERNAME'),
-      //   password: configService.get('PG_DB_PASSWORD'),
-      //   database: configService.get('PG_DB_DATABASE'),
-      //   models: [],
-      // }),
-      // inject: [ConfigService],
-
-      // or
-
       imports: [ConfigModule],
       useClass: SequelizeConfigService,
       inject: [ConfigService],
     }),
     FileUploadAppModule,
     UsersModule,
+    //file-upload end
+
+    //versioning
+    VersioningModule,
+
+    //task-scheduling
+    ScheduleModule.forRoot(),
+    CronTasksSchedulingModule, //logs message to console
   ],
   controllers: [AppController],
   providers: [AppService],

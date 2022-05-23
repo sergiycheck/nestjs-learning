@@ -1,0 +1,27 @@
+node-cron
+Looking for maintainers/contributors
+
+https://github.com/kelektiv/node-cron
+
+https://github.com/nestjs/schedule
+
+https://vscode.dev/github/nestjs/schedule
+
+crontab
+http://crontab.org/
+
+legacy library
+https://momentjs.com/timezone/
+
+<!-- The Intl object is the namespace for the ECMAScript Internationalization API, which provides language sensitive string comparison, number formatting, and date and time formatting.  -->
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl
+
+<!-- Luxon is a library for dealing with dates and times in JavaScript. -->
+
+https://moment.github.io/luxon/#/?id=luxon
+
+<!-- Modern JavaScript date utility library
+ -->
+
+https://date-fns.org/
