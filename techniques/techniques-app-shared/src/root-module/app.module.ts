@@ -1,3 +1,4 @@
+import { RegisterQueueModule } from './../queue-bull/register-queue.module';
 import { CronTasksSchedulingModule } from './../task-scheduling/task-scheduling.module';
 import { VersioningModule } from './../versioning/verioning.module';
 import { UsersModule } from './../file-upload/sequelize-trying/users.module';
@@ -10,6 +11,7 @@ import * as Joi from 'joi';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { SequelizeConfigService } from '../file-upload/sequelize-trying/sequelize-config.service';
 import { ScheduleModule } from '@nestjs/schedule';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -47,6 +49,15 @@ import { ScheduleModule } from '@nestjs/schedule';
     //task-scheduling
     ScheduleModule.forRoot(),
     CronTasksSchedulingModule, //logs message to console
+
+    //queue
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379, //redis port
+      },
+    }),
+    RegisterQueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

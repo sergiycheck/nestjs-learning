@@ -6,7 +6,7 @@ import { Module } from '@nestjs/common';
 @Module({
   //pass to providers array and methods marked with cron decorator will work
   providers: [
-    TasksServiceDefault,
+    // TasksServiceDefault,
     // NotificationServiceWithLocale,
     // TasksServiceDifferentMethods,
   ],
