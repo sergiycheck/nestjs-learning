@@ -1,3 +1,4 @@
+import { CookieLearningModule } from './../cookie/cookie-module.module';
 import { RegisterQueueModule } from './../queue-bull/register-queue.module';
 import { CronTasksSchedulingModule } from './../task-scheduling/task-scheduling.module';
 import { VersioningModule } from './../versioning/verioning.module';
@@ -58,6 +59,9 @@ import { BullModule } from '@nestjs/bull';
       },
     }),
     RegisterQueueModule,
+
+    //cookie
+    CookieLearningModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 // import * as dotenv from 'dotenv';
 // dotenv.config();
 import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -32,6 +33,7 @@ export function configureGlobalMiddelware(app: INestApplication) {
     // or
     // defaultVersion: VERSION_NEUTRAL
   });
+  app.use(cookieParser());
 }
 
 export function configureSequelizeOnModelChange(app: INestApplication) {

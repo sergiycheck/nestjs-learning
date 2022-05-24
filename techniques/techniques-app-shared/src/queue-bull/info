@@ -1,0 +1,8 @@
+Bull is a Node library that implements a fast and robust queue system based on redis.
+https://github.com/OptimalBits/bull
+
+guide
+https://optimalbits.github.io/bull/
+
+Reference
+https://github.com/OptimalBits/bull/blob/develop/REFERENCE.md
