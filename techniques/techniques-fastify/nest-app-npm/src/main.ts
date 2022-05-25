@@ -7,7 +7,6 @@ import { AppModule } from './root-module/app.module';
 
 import { FastifyCookieOptions } from '@fastify/cookie';
 import cookie from '@fastify/cookie';
-import fastify from 'fastify';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
@@ -18,14 +17,22 @@ async function bootstrap() {
     // { logger: true }
   );
 
+  await configureMiddlewares(app);
+  configureSwagger(app);
+
+  await app.listen(3030);
+}
+
+export async function configureMiddlewares(app: NestFastifyApplication) {
   await app.register(cookie, {
     secret: 'my-secret', // for cookies signature
     parseOptions: {}, // options for parsing cookies
   } as FastifyCookieOptions);
 
-  configureSwagger(app);
-
-  await app.listen(3030);
+  await app.register(import('@fastify/compress'), {
+    global: false,
+    encodings: ['gzip', 'deflate'],
+  });
 }
 
 export function configureSwagger(app: NestFastifyApplication) {

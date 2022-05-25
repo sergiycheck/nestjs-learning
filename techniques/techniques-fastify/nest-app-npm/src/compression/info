@@ -1,0 +1,3 @@
+Adds compression utils to the Fastify reply object and a hook to decompress requests payloads. Supports gzip, deflate, and brotli.
+
+https://github.com/fastify/fastify-compress
