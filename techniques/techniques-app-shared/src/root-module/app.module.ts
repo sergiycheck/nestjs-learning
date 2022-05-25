@@ -1,3 +1,4 @@
+import { RemoteUsersWithHttpModule } from './../http-module/remote-users-with-http.module';
 import { StreamingFilesModule } from './../streaming-files/streaming-files.module';
 import { OrderEventsModule } from './../events/order-events.module';
 import { EventsLearningModule } from './../events/events-learning.module';
@@ -89,6 +90,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
     //streaming files
     StreamingFilesModule,
+
+    //http-module
+    RemoteUsersWithHttpModule,
   ],
   controllers: [AppController],
   providers: [AppService],
