@@ -1,0 +1,4 @@
+For high-traffic websites in production, it is strongly recommended to offload compression from the application server - typically in a reverse proxy (e.g., Nginx). In that case, you should not use compression middleware.
+
+outdated library compression
+https://github.com/expressjs/compression

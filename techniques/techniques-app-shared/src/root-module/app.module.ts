@@ -1,3 +1,4 @@
+import { StreamingFilesModule } from './../streaming-files/streaming-files.module';
 import { OrderEventsModule } from './../events/order-events.module';
 import { EventsLearningModule } from './../events/events-learning.module';
 import { CookieLearningModule } from './../cookie/cookie-module.module';
@@ -85,6 +86,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     }),
     EventsLearningModule,
     OrderEventsModule,
+
+    //streaming files
+    StreamingFilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
