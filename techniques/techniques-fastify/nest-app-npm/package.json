@@ -10,8 +10,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start:dev": "export NODE_ENV=development&&nest start --watch",
+    "start:debug": "export NODE_ENV=development&&nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@fastify/compress": "^5.0.0",
     "@fastify/cookie": "^6.0.0",
+    "@fastify/secure-session": "^4.0.0",
     "@fastify/swagger": "^6.0.0",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",

@@ -1,3 +1,4 @@
+import { SessionUsersModule } from './../session/session-users.module';
 import { CompressionModule } from './../compression/compression.module';
 import { TechniquesCookieModule } from '../techniques/techniques-cookies/techniques-cookies.module';
 import { CatsModule } from './../cats/cats.module';
@@ -6,7 +7,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [CatsModule, TechniquesCookieModule, CompressionModule],
+  imports: [
+    CatsModule,
+    TechniquesCookieModule,
+    CompressionModule,
+    SessionUsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
