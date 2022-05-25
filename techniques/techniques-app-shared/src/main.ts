@@ -8,11 +8,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
+import * as session from 'express-session';
+import { randomUUID } from 'crypto';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  configureGlobalMiddelware(app);
+  await configureGlobalMiddelware(app);
   configureSequelizeOnModelChange(app);
   configureSwagger(app);
 
@@ -21,7 +23,7 @@ async function bootstrap() {
 }
 bootstrap();
 
-export function configureGlobalMiddelware(app: INestApplication) {
+export async function configureGlobalMiddelware(app: INestApplication) {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cors());
 
@@ -36,6 +38,18 @@ export function configureGlobalMiddelware(app: INestApplication) {
   });
   app.use(cookieParser());
   app.use(compression());
+
+  if (process.env.NODE_ENV === 'development') {
+    //only for debugging!
+    const secretUUID = randomUUID();
+    app.use(
+      session({
+        secret: secretUUID,
+        resave: false,
+        saveUninitialized: false,
+      }),
+    );
+  }
 }
 
 export function configureSequelizeOnModelChange(app: INestApplication) {

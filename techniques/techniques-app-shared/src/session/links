@@ -1,0 +1,11 @@
+express-session
+https://github.com/expressjs/session
+
+A robust, performance-focused and full-featured Redis client for Node.js.
+https://github.com/luin/ioredis
+
+node-redis is a modern, high performance Redis client for Node.js.
+https://github.com/redis/node-redis
+
+Compatible Session Stores
+https://github.com/expressjs/session#compatible-session-stores
