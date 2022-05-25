@@ -1,7 +1,7 @@
 import { ApiTags } from '@nestjs/swagger';
 import { Observable } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { Controller, Get, Res } from '@nestjs/common';
+import { Controller, Get, Param, Res } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { Response } from 'express';
 
@@ -27,11 +27,17 @@ export class RemoteUsersWithHttpController {
   url = 'https://reqres.in/api';
   constructor(private httpService: HttpService) {}
 
-  @Get('users-observable')
-  findAllObservable(@Res() response: Response) {
+  @Get('users-observable-express-specific')
+  findAllObservableExpressSpecific(@Res() response: Response) {
     this.httpService.get<DataResponse<User>>(`${this.url}/users`).subscribe((observer) => {
       return response.json(observer.data);
     });
+  }
+
+  @Get('get-observable-response-from-req-res/:reqKey')
+  getObservableResponse(@Param('reqKey') reqKey: string) {
+    //TODO: can not serialize axios response
+    return this.httpService.get<DataResponse<User>>(`${this.url}/${reqKey}`);
   }
 
   @Get('users-promise')

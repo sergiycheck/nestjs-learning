@@ -1,3 +1,4 @@
+import { ServerSentEventsModule } from './../server-sent-events/server-sent-events.module';
 import { UserSessionModule } from './../session/user-session.module';
 import { RemoteUsersWithHttpModule } from './../http-module/remote-users-with-http.module';
 import { StreamingFilesModule } from './../streaming-files/streaming-files.module';
@@ -97,6 +98,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 
     //session
     UserSessionModule,
+
+    //server sent events
+    ServerSentEventsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
