@@ -1,9 +1,11 @@
+import { AllExceptionsFilter } from './../common/filters/all-exceptions.filter';
 import { S3ManagerModule } from './../aws-s3/s3-manager.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -22,6 +24,13 @@ import * as Joi from 'joi';
     S3ManagerModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useExisting: AllExceptionsFilter,
+    },
+    AllExceptionsFilter,
+  ],
 })
 export class AppModule {}

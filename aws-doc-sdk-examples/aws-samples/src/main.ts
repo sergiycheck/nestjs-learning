@@ -9,6 +9,7 @@ async function bootstrap() {
   configureSwagger(app);
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(3050);
+  console.log(`app is listening on ${await app.getUrl()}`);
 }
 bootstrap();
 

@@ -1,61 +1,24 @@
+import { AllExceptionsFromAwsFilter } from './../common/filters/all-exceptions-from-aws.filter';
 import {
   Body,
   Controller,
   Delete,
   Get,
-  Injectable,
   Param,
   Post,
   UploadedFile,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import * as AWS from 'aws-sdk';
 import { ApiTags, ApiConsumes } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { randomUUID } from 'crypto';
-
-@Injectable()
-export class S3ManagerService {
-  private AWS_REGION: string;
-  private IAM_USER_KEY_ID: string;
-  private IAM_USER_SECRET_ACCESS_KEY: string;
-  private _S3: AWS.S3;
-
-  constructor(private configService: ConfigService) {
-    this.AWS_REGION = this.configService.get('AWS_REGION');
-    this.IAM_USER_KEY_ID = this.configService.get('IAM_USER_KEY_ID');
-    this.IAM_USER_SECRET_ACCESS_KEY = this.configService.get(
-      'IAM_USER_SECRET_ACCESS_KEY',
-    );
-
-    this._S3 = new AWS.S3({
-      region: this.AWS_REGION,
-      accessKeyId: this.IAM_USER_KEY_ID,
-      secretAccessKey: this.IAM_USER_SECRET_ACCESS_KEY,
-    });
-  }
-
-  get S3() {
-    return this._S3;
-  }
-}
-
-export const appendRandomIdWithHyphenToText = (text: string) => `${randomUUID()}-${text}`;
-
-export class CreateBucketDto {
-  @IsNotEmpty()
-  name: string;
-}
-
-export class FileInfo {
-  @IsNotEmpty()
-  bucketName: string;
-}
+import { CreateBucketDto, FileInfo } from './dto/dtos.dto';
+import { S3ManagerService } from './s3-manager.service';
+import { appendRandomIdWithHyphenToText } from '../utils/utils';
 
 @ApiTags('S3ManagerController')
 @Controller('s3-buckets')
+@UseFilters(AllExceptionsFromAwsFilter)
 export class S3ManagerController {
   constructor(private s3Manager: S3ManagerService) {}
 
