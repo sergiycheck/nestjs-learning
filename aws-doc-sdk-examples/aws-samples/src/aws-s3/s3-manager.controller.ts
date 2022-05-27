@@ -10,9 +10,9 @@ import {
   UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiConsumes } from '@nestjs/swagger';
+import { ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CreateBucketDto, FileInfo } from './dto/dtos.dto';
+import { CreateBucketDto, FileInfo, FileUploadDto } from './dto/dtos.dto';
 import { S3ManagerService } from './s3-manager.service';
 import { appendRandomIdWithHyphenToText } from '../utils/utils';
 
@@ -44,14 +44,21 @@ export class S3ManagerController {
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('file'))
   @Post('upload')
+  @ApiBody({
+    description: 'upload a file to a bucket',
+    type: FileUploadDto,
+  })
   async uploadFile(
     @Body() fileInfo: FileInfo,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const uploadParams = {
+    const uploadParams: AWS.S3.PutObjectRequest = {
       Bucket: fileInfo.bucketName,
-      Key: appendRandomIdWithHyphenToText(file.originalname),
+      Key: fileInfo?.appendRadomIdAsAFileKey
+        ? appendRandomIdWithHyphenToText(file.originalname)
+        : file.originalname,
       Body: file.buffer,
+      // ContentType: 'text/html; charset=UTF-8',
     };
 
     const result = await this.s3Manager.S3.upload(uploadParams).promise();

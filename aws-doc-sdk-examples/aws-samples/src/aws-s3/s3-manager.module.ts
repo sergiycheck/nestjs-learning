@@ -1,3 +1,4 @@
+import { S3ManagerStaticWebsiteController } from './s3-manager-static-website.controller';
 import { S3ManagerPoliciesController } from './s3-manager-policies.controller';
 import { S3ManagerAclController } from './s3-manager-acl.controller';
 import { ConfigModule } from '@nestjs/config';
@@ -19,6 +20,7 @@ import { S3ManagerCorsController } from './s3-manager-cors.controller';
     S3ManagerCorsController,
     S3ManagerAclController,
     S3ManagerPoliciesController,
+    S3ManagerStaticWebsiteController,
   ],
 })
 export class S3ManagerModule {}
