@@ -1,3 +1,4 @@
+import { S3ManagerAclController } from './s3-manager-acl.controller';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { S3ManagerController } from './s3-manager.controller';
@@ -12,6 +13,6 @@ import { S3ManagerCorsController } from './s3-manager-cors.controller';
     MulterModule.register({}),
   ],
   providers: [S3ManagerService],
-  controllers: [S3ManagerController, S3ManagerCorsController],
+  controllers: [S3ManagerController, S3ManagerCorsController, S3ManagerAclController],
 })
 export class S3ManagerModule {}

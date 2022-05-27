@@ -1,6 +1,6 @@
 import { AllExceptionsFromAwsFilter } from './../common/filters/all-exceptions-from-aws.filter';
-import { Body, Controller, Get, Param, Post, Put, UseFilters } from '@nestjs/common';
-import { ApiTags, ApiConsumes } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Put, UseFilters } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { S3ManagerService } from './s3-manager.service';
 import { allowedMethodsArr, PutBucketCorsDto } from './dto/s3-cors.dto';
 import * as _ from 'lodash';

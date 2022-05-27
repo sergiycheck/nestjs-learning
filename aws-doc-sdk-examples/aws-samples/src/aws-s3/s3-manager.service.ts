@@ -20,6 +20,7 @@ export class S3ManagerService {
       region: this.AWS_REGION,
       accessKeyId: this.IAM_USER_KEY_ID,
       secretAccessKey: this.IAM_USER_SECRET_ACCESS_KEY,
+      logger: console,
     });
   }
 
