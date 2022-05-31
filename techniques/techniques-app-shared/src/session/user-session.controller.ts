@@ -2,7 +2,6 @@ import { ApiTags } from '@nestjs/swagger';
 import { Controller, Get, Req, Session } from '@nestjs/common';
 import { Request } from 'express';
 
-//TODO: connect session with redis
 @ApiTags('UserSessionController')
 @Controller('user-session')
 export class UserSessionController {

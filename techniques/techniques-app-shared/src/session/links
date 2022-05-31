@@ -12,3 +12,9 @@ https://github.com/expressjs/session#compatible-session-stores
 
 cookies info
 https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
+
+connect redis
+https://github.com/tj/connect-redis
+
+redis
+https://github.com/redis/node-redis
