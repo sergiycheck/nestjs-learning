@@ -36,3 +36,7 @@ $ npm run test:cov
 $ chmod a+rx my-script.sh
 $ ./my-script.sh
 ```
+
+### prerequisites
+
+generate localhost private key and public certificate with **mkcert** tool

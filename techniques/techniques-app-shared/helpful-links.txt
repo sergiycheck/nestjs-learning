@@ -7,3 +7,9 @@ https://www.shellscript.sh/
 file upload ****
 https://github.com/expressjs/multer#multeropts
 
+expressjs 5 api
+http://expressjs.com/en/5x/api.html#path-examples
+
+
+serve localhost site over https
+https://web.dev/how-to-use-local-https/

@@ -10,20 +10,53 @@ import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
 import * as session from 'express-session';
 import { randomUUID } from 'crypto';
+import { ConfigService } from '@nestjs/config';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { PORT, PROXY_PORT } from './app-defaults';
+import { AppProxyModule } from './proxy/app-proxy.module';
+import * as fs from 'fs';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const appApi = await getAppNestExpressApp();
+  const appApiProxy = await NestFactory.create<NestExpressApplication>(AppProxyModule);
 
-  await configureGlobalMiddelware(app);
-  configureSequelizeOnModelChange(app);
-  configureSwagger(app);
-
-  await app.listen(3000);
-  console.log(`App is running on ${await app.getUrl()}`);
+  configureAndListenProxyServer(appApiProxy, PROXY_PORT);
+  configureAndListenApiServer(appApi, PORT);
 }
 bootstrap();
 
-export async function configureGlobalMiddelware(app: INestApplication) {
+export async function getAppNestExpressApp(): Promise<NestExpressApplication> {
+  const keyPath = './secrets/web_api/localhost-key.pem';
+  const certPath = './secrets/web_api/localhost.pem';
+  let appApi: NestExpressApplication = null;
+  if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    const httpsOptions = {
+      key: fs.readFileSync('./secrets/web_api/localhost-key.pem'),
+      cert: fs.readFileSync('./secrets/web_api/localhost.pem'),
+    };
+
+    appApi = await NestFactory.create<NestExpressApplication>(AppModule, {
+      httpsOptions,
+    });
+  }
+  appApi = await NestFactory.create<NestExpressApplication>(AppModule);
+  return appApi;
+}
+
+export async function configureAndListenProxyServer(app: NestExpressApplication, port: number) {
+  await app.listen(port);
+  console.log(`Proxy app is running on ${await app.getUrl()}`);
+}
+
+export async function configureAndListenApiServer(app: NestExpressApplication, port: number) {
+  await configureGlobalMiddelware(app);
+  configureSequelizeOnModelChange(app);
+  configureSwagger(app);
+  await app.listen(port);
+  console.log(`App is running on ${await app.getUrl()}`);
+}
+
+export async function configureGlobalMiddelware(app: NestExpressApplication) {
   app.useGlobalPipes(new ValidationPipe());
   app.use(cors());
 
@@ -40,15 +73,24 @@ export async function configureGlobalMiddelware(app: INestApplication) {
   app.use(compression());
 
   if (process.env.NODE_ENV === 'development') {
-    //only for debugging!
+    //only for debugging!\
+
     const secretUUID = randomUUID();
-    app.use(
-      session({
-        secret: secretUUID,
-        resave: false,
-        saveUninitialized: false,
-      }),
-    );
+
+    const sess: session.SessionOptions = {
+      secret: secretUUID,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {},
+    };
+
+    const configService = app.get(ConfigService);
+    if (configService.get('NODE_ENV') === 'development') {
+      sess.cookie.secure = true;
+      app.enable('trust proxy');
+    }
+
+    app.use(session(sess));
   }
 }
 

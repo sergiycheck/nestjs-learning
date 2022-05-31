@@ -1,0 +1,22 @@
+http-proxy
+https://www.npmjs.com/package/http-proxy
+
+express http proxy
+https://github.com/villadora/express-http-proxy
+
+http proxy middleware {
+
+https://github.com/chimurai/http-proxy-middleware
+
+recipes, code samples
+https://github.com/chimurai/http-proxy-middleware/tree/master/recipes
+
+}
+
+micromatch
+https://www.npmjs.com/package/micromatch
+
+How to use HTTPS for local development
+https://web.dev/how-to-use-local-https/
+
+https://github.com/FiloSottile/mkcert
