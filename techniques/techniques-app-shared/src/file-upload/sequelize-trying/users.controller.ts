@@ -1,5 +1,5 @@
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
+import { CreateUserDto, UserIdWithFileIdDto, VerifyJwtTokenDto } from './dtos.dto';
 import { UsersService } from './users.service';
 import {
   Controller,
@@ -18,12 +18,14 @@ import { imageFileFilter, imageFileFilterIfFileExists } from './../file-upload.u
 import { ErrorsInterceptor } from './error.interceptor';
 import { Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
+import { OAuth2Client } from 'google-auth-library';
+import { ConfigService } from '@nestjs/config';
 
 const maxFilesCountToUploadAtOnce = 10;
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private usersService: UsersService, private configService: ConfigService) {}
 
   @Post()
   @UseInterceptors(
@@ -71,5 +73,21 @@ export class UsersController {
   @Delete('one')
   deleteOne(@Query('uId') userId: string) {
     return this.usersService.remove(userId);
+  }
+
+  @Post('verify-google-jwt-token')
+  async verifyGoogleJwtToken(@Body() jwtGoogleTokenDto: VerifyJwtTokenDto) {
+    const client_id = this.configService.get('GOOGLE_CLIENT_ID');
+    const client = new OAuth2Client(client_id);
+
+    const ticket = await client.verifyIdToken({
+      idToken: jwtGoogleTokenDto.jwtGoogleToken,
+      audience: client_id,
+    });
+
+    const payload = ticket.getPayload();
+    console.log('payload', payload);
+    const userId = payload.sub;
+    console.log('userId', userId);
   }
 }

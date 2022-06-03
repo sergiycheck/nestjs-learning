@@ -19,3 +19,9 @@ export class UserIdWithFileIdDto {
   @IsString()
   fileId: string;
 }
+
+export class VerifyJwtTokenDto {
+  @IsNotEmpty()
+  @IsString()
+  jwtGoogleToken: string;
+}

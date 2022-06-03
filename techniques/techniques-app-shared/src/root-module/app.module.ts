@@ -39,6 +39,9 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         PG_DB_USERNAME: Joi.string().required(),
         PG_DB_PASSWORD: Joi.string().required(),
         PG_DB_DATABASE: Joi.string().required(),
+        //
+        GOOGLE_CLIENT_ID: Joi.string().required(),
+        GOOGLE_CLIENT_SECRET: Joi.string().required(),
       }),
     }),
 
