@@ -1,3 +1,4 @@
+import { AllExceptionsFilter } from './../common/all-exceptions.filter';
 import { ServerSentEventsModule } from './../server-sent-events/server-sent-events.module';
 import { UserSessionModule } from './../session/user-session.module';
 import { RemoteUsersWithHttpModule } from './../http-module/remote-users-with-http.module';
@@ -20,6 +21,7 @@ import { SequelizeConfigService } from '../file-upload/sequelize-trying/sequeliz
 import { ScheduleModule } from '@nestjs/schedule';
 import { BullModule } from '@nestjs/bull';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_FILTER } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -106,6 +108,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ServerSentEventsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    AllExceptionsFilter,
+    { provide: APP_FILTER, useExisting: AllExceptionsFilter },
+  ],
 })
 export class AppModule {}

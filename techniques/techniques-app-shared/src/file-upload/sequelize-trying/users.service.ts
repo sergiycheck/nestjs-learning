@@ -23,7 +23,7 @@ export class UsersService {
 
   async createUserWithManyPhotos(data: CreateUserDto, files?: Array<Express.Multer.File>) {
     const user = await this.userModel.create({ ...data, id: uuidv4() });
-    if (!files.length) return user;
+    if (!files?.length) return user;
     return this.addManyPhotos(user.id, files);
   }
 

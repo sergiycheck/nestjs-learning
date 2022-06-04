@@ -11,7 +11,14 @@ import { createClient } from 'redis';
 
 export async function configureGlobalMiddelware(app: NestExpressApplication) {
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cors());
+
+  //https://www.npmjs.com/package/cors
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
 
   app.enableVersioning({
     type: VersioningType.URI,
