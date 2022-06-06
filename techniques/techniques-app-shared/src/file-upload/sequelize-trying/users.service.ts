@@ -1,6 +1,11 @@
 import { UploaderToS3Service } from './../services/uploaderToS3.service';
-import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { CreateUserDto, UserIdWithFileIdDto, UpsertUserDto } from './dtos.dto';
+import {
+  ForbiddenException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,6 +20,11 @@ export class UsersService {
   ) {}
 
   async create(data: CreateUserDto, file?: Express.Multer.File) {
+    const emailCount = await this.userModel.count({ where: { email: data.email } });
+    if (emailCount) {
+      throw new ForbiddenException(`user with email ${data.email} already exists`);
+    }
+
     const user = await this.userModel.create({ ...data, id: uuidv4() });
     if (!file) return user;
 
@@ -119,5 +129,26 @@ export class UsersService {
       resDelFromS3,
       resDelFromDb,
     };
+  }
+
+  getPojo(entity: unknown) {
+    return JSON.parse(JSON.stringify(entity));
+  }
+
+  async upsertUser(upsertUserDto: UpsertUserDto): Promise<Omit<User, 'googleJwtToken'>> {
+    let upsertResult;
+    const userFromDb = await this.userModel.findOne({ where: { email: upsertUserDto.email } });
+    if (userFromDb) {
+      upsertResult = await this.userModel.upsert({ ...upsertUserDto, id: userFromDb.id });
+    } else {
+      upsertResult = await this.userModel.upsert({ ...upsertUserDto, id: uuidv4() });
+    }
+
+    let [user] = upsertResult;
+    user = this.getPojo(user);
+
+    const { googleJwtToken, ...userData } = user;
+
+    return userData;
   }
 }

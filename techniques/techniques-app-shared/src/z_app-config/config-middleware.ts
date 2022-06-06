@@ -1,5 +1,4 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
