@@ -40,3 +40,9 @@ $ ./my-script.sh
 ### prerequisites
 
 generate localhost private key and public certificate with **mkcert** tool
+
+delete multiple redis keys
+
+```bash
+redis-cli --scan --pattern 'Product:*:*' | xargs redis-cli DEL
+```

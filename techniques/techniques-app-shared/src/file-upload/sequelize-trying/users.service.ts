@@ -20,19 +20,25 @@ export class UsersService {
   ) {}
 
   async create(data: CreateUserDto, file?: Express.Multer.File) {
-    const emailCount = await this.userModel.count({ where: { email: data.email } });
-    if (emailCount) {
-      throw new ForbiddenException(`user with email ${data.email} already exists`);
-    }
-
-    const user = await this.userModel.create({ ...data, id: uuidv4() });
+    const user = await this.createOrGetUser(data);
     if (!file) return user;
 
     return this.addOnePhoto(user.id, file.buffer, file.originalname);
   }
 
+  async createOrGetUser(data: CreateUserDto) {
+    const emailCount = await this.userModel.count({ where: { email: data.email } });
+    if (emailCount) {
+      // throw new ForbiddenException(`user with email ${data.email} already exists`);
+      return await this.userModel.findOne({ where: { email: data.email } });
+    }
+
+    return await this.userModel.create({ ...data, id: uuidv4() });
+  }
+
   async createUserWithManyPhotos(data: CreateUserDto, files?: Array<Express.Multer.File>) {
-    const user = await this.userModel.create({ ...data, id: uuidv4() });
+    const user = await this.createOrGetUser(data);
+
     if (!files?.length) return user;
     return this.addManyPhotos(user.id, files);
   }

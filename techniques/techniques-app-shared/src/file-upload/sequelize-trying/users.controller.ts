@@ -78,15 +78,39 @@ export class UsersController {
   }
 
   @Delete('one')
-  deleteOne(@Query('uId') userId: string) {
-    return this.usersService.remove(userId);
+  async deleteOne(@Query('uId') userId: string, @Req() req: Request, @Res() res: Response) {
+    const result = await this.usersService.remove(userId);
+
+    return this.removeUserFromSession({
+      req,
+      res,
+      msg: 'successfully deleted',
+      userId,
+      data: result,
+    });
   }
 
   @Delete('logout')
   logOut(@Query('uId') userId: string, @Req() req: Request, @Res() res: Response) {
+    return this.removeUserFromSession({ req, res, msg: 'successfully logged out', userId });
+  }
+
+  private removeUserFromSession({
+    req,
+    res,
+    msg,
+    userId,
+    data,
+  }: {
+    req: Request;
+    res: Response;
+    msg: string;
+    userId: string;
+    data?: any;
+  }) {
     req.user = undefined;
     req.session.destroy((err: any) => {
-      return res.json({ message: 'successfully logged out', userId });
+      return res.json({ message: msg, userId, data });
     });
   }
 
@@ -96,6 +120,7 @@ export class UsersController {
     return res.status(200).json(userData);
   }
 
+  //TODO: associate sessionId with user and get user on startup from redis from user cookies
   @Post('verify-google-jwt-token')
   async verifyGoogleJwtToken(
     @Body() jwtGoogleTokenDto: VerifyJwtTokenDto,
