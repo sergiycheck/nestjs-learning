@@ -27,8 +27,8 @@ export class FileUploadDto {
 
 export class PubBucketWebsiteDto {
   @IsNotEmpty()
-  errorDocumentKey: string;
+  errorDocumentKey = '404.html';
 
   @IsNotEmpty()
-  indexDocumentSuffix: string;
+  indexDocumentSuffix = 'index.html';
 }

@@ -5,10 +5,10 @@ import { MulterModule } from '@nestjs/platform-express';
 import { S3ManagerService } from './s3-manager.service';
 import * as Joi from 'joi';
 
-// import { S3ManagerCorsController } from './s3-manager-cors.controller';
-// import { S3ManagerStaticWebsiteController } from './s3-manager-static-website.controller';
-// import { S3ManagerPoliciesController } from './s3-manager-policies.controller';
-// import { S3ManagerAclController } from './s3-manager-acl.controller';
+import { S3ManagerCorsController } from './s3-manager-cors.controller';
+import { S3ManagerAclController } from './s3-manager-acl.controller';
+import { S3ManagerPoliciesController } from './s3-manager-policies.controller';
+import { S3ManagerStaticWebsiteController } from './s3-manager-static-website.controller';
 
 @Module({
   imports: [
@@ -29,10 +29,10 @@ import * as Joi from 'joi';
   providers: [S3ManagerService],
   controllers: [
     S3ManagerController,
-    // S3ManagerCorsController,
-    // S3ManagerAclController,
-    // S3ManagerPoliciesController,
-    // S3ManagerStaticWebsiteController,
+    S3ManagerCorsController,
+    S3ManagerAclController,
+    S3ManagerPoliciesController,
+    S3ManagerStaticWebsiteController,
   ],
 })
 export class S3ManagerModule {}

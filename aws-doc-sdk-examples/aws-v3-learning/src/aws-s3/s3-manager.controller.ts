@@ -32,6 +32,8 @@ import {
 import { Stream } from 'stream';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { fetch } from 'undici';
+// https://github.com/nodejs/undici
+// https://docs.nestjs.com/techniques/http-module
 
 @ApiTags('S3ManagerController')
 @Controller('s3-buckets-sdk-v3')
