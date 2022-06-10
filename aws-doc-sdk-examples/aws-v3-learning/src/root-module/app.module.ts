@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { APP_FILTER } from '@nestjs/core';
+import { AwsLambdaModule } from '../aws-lambda/aws-lambda.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { APP_FILTER } from '@nestjs/core';
       }),
     }),
     S3ManagerModule,
+    AwsLambdaModule,
   ],
   controllers: [AppController],
   providers: [

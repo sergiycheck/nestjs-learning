@@ -55,13 +55,19 @@ export class CloudFormationService {
 
         if (resourceType === amPolicyResourceType) {
           const IDENTITY_POOL_ID = resource.LogicalResourceId;
-          partialResults.push({ 'IDENTITY_POOL_ID:': IDENTITY_POOL_ID });
+          partialResults.push({
+            'IDENTITY_POOL_ID:': IDENTITY_POOL_ID,
+            stack_name: resource.StackName,
+          });
         } else if (resourceType === bucketResourceType) {
           const BUCKET_NAME = resource.PhysicalResourceId;
-          partialResults.push({ 'BUCKET_NAME:': BUCKET_NAME });
+          partialResults.push({
+            'BUCKET_NAME:': BUCKET_NAME,
+            stack_name: resource.StackName,
+          });
         } else if (resourceType === amRoleResourceType) {
           const IAM_ROLE = resource.StackId;
-          partialResults.push({ 'IAM_ROLE:': IAM_ROLE });
+          partialResults.push({ 'IAM_ROLE:': IAM_ROLE, stack_name: resource.StackName });
         }
       });
     } else {
