@@ -1,5 +1,6 @@
+import { GoogleAuthToLocalService } from './google-auth-to-local/google-auth-to-local.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CreateUserDto, UserIdWithFileIdDto } from './dtos.dto';
+import { CreateUserDto, UpsertUserDto, UserIdWithFileIdDto, VerifyJwtTokenDto } from './dtos.dto';
 import { UsersService } from './users.service';
 import {
   Controller,
@@ -13,17 +14,25 @@ import {
   UploadedFile,
   Res,
   UploadedFiles,
+  Req,
+  Session,
 } from '@nestjs/common';
 import { imageFileFilter, imageFileFilterIfFileExists } from './../file-upload.utils';
 import { ErrorsInterceptor } from './error.interceptor';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 const maxFilesCountToUploadAtOnce = 10;
+
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private configService: ConfigService,
+    private googleAuthToLocalService: GoogleAuthToLocalService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -69,7 +78,71 @@ export class UsersController {
   }
 
   @Delete('one')
-  deleteOne(@Query('uId') userId: string) {
-    return this.usersService.remove(userId);
+  async deleteOne(@Query('uId') userId: string, @Req() req: Request, @Res() res: Response) {
+    const result = await this.usersService.remove(userId);
+
+    return this.removeUserFromSession({
+      req,
+      res,
+      msg: 'successfully deleted',
+      userId,
+      data: result,
+    });
+  }
+
+  @Delete('logout')
+  logOut(@Query('uId') userId: string, @Req() req: Request, @Res() res: Response) {
+    return this.removeUserFromSession({ req, res, msg: 'successfully logged out', userId });
+  }
+
+  private removeUserFromSession({
+    req,
+    res,
+    msg,
+    userId,
+    data,
+  }: {
+    req: Request;
+    res: Response;
+    msg: string;
+    userId: string;
+    data?: any;
+  }) {
+    req.user = undefined;
+    req.session.destroy((err: any) => {
+      return res.json({ message: msg, userId, data });
+    });
+  }
+
+  @Get('current-session-user')
+  getCurrentUser(@Req() req: Request, @Res() res: Response) {
+    const { googleJwtToken, ...userData } = req.user;
+    return res.status(200).json(userData);
+  }
+
+  //TODO: associate sessionId with user and get user on startup from redis from user cookies
+  @Post('verify-google-jwt-token')
+  async verifyGoogleJwtToken(
+    @Body() jwtGoogleTokenDto: VerifyJwtTokenDto,
+    @Session() session: Record<string, any>,
+  ) {
+    const ticket = await this.googleAuthToLocalService.verifyIdToken(
+      jwtGoogleTokenDto.jwtGoogleToken,
+    );
+    const payload = ticket.getPayload();
+
+    const upsertParams: UpsertUserDto = {
+      firstName: payload.given_name,
+      lastName: payload.family_name,
+      email: payload.email,
+      pictureUrl: payload.picture,
+      googleJwtToken: jwtGoogleTokenDto.jwtGoogleToken,
+    };
+
+    const user = await this.usersService.upsertUser(new UpsertUserDto({ ...upsertParams }));
+
+    session.userId = user.id;
+
+    return user;
   }
 }

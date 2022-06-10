@@ -1,0 +1,22 @@
+setup webpack
+https://webpack.js.org/guides/
+
+using webpack dev server
+https://webpack.js.org/guides/development/#using-watch-mode
+
+JavaScript environment for AWS Lambda example
+https://github.com/awsdocs/aws-doc-sdk-examples/tree/main/javascriptv3/example_code/lambda/lambda_create_function
+
+tutorial
+https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/lambda-create-table-deploy-function.html
+
+TODO: not worked
+
+Error Error: getaddrinfo EAI_AGAIN cognito-identity.eu-central-1.amazonaws.com
+at GetAddrInfoReqWrap.onlookup [as oncomplete] (node:dns:71:26) {
+errno: -3001,
+code: 'EAI_AGAIN',
+syscall: 'getaddrinfo',
+hostname: 'cognito-identity.eu-central-1.amazonaws.com',
+'$metadata': { attempts: 1, totalRetryDelay: 0 }
+}

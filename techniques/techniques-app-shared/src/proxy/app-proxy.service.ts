@@ -19,7 +19,8 @@ export class AppProxyService {
       target: `https://localhost:${PORT}`,
       changeOrigin: true,
       logLevel: 'debug',
-      secure: this.configService.get('NODE_ENV') === 'development' ? false : true, //disable certificate check
+      //disable certificate check this.configService.get('NODE_ENV') === 'development' ? false : true
+      secure: false,
       xfwd: true,
     };
 

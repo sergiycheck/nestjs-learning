@@ -1,0 +1,18 @@
+AWS SDK for JavaScript v3
+The AWS SDK for JavaScript v3 is a rewrite of v2 with some great new features. As with version 2, it enables you to easily work with Amazon Web Services, but has a modular architecture with a separate package for each service. It also includes many frequently requested features, such as a first-class TypeScript support and a new middleware stack. For more details, visit blog post on general availability of Modular AWS SDK for JavaScript.
+
+https://github.com/aws/aws-sdk-js-v3
+
+client-s3 npm
+https://www.npmjs.com/package/@aws-sdk/client-s3
+
+last links
+deploy lambda
+
+https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/lambda-create-table-deploy-function.html
+
+reference
+https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-s3/globals.html
+
+cloudFormation
+https://eu-central-1.console.aws.amazon.com/cloudformation/home?region=eu-central-1#/stacks/stackinfo?filteringText=&filteringStatus=active&viewNested=true&hideStacks=false&stackId=arn%3Aaws%3Acloudformation%3Aeu-central-1%3A581425740433%3Astack%2Flambda-example-stack%2F6dda3840-e8c2-11ec-8e3f-06b2f2834cfa

@@ -1,5 +1,4 @@
 import { ValidationPipe, VersioningType } from '@nestjs/common';
-
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
@@ -11,7 +10,14 @@ import { createClient } from 'redis';
 
 export async function configureGlobalMiddelware(app: NestExpressApplication) {
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cors());
+
+  //https://www.npmjs.com/package/cors
+  app.use(
+    cors({
+      origin: true,
+      credentials: true,
+    }),
+  );
 
   app.enableVersioning({
     type: VersioningType.URI,

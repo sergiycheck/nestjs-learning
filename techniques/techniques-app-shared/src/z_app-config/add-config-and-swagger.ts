@@ -5,6 +5,7 @@ export function configureSequelizeOnModelChange(app: INestApplication) {
   // run on model change
   // const sequelize = app.get(Sequelize);
   // await sequelize.sync({ force: true });
+  //or use migration without data lose
 }
 
 export function configureSwagger(app: INestApplication) {

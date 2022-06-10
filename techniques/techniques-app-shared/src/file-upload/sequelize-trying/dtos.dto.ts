@@ -1,6 +1,12 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsJWT, IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateUserDto {
+export class BaseEntity {
+  constructor(attrs: any) {
+    Object.assign(this, attrs);
+  }
+}
+
+export class CreateUserDto extends BaseEntity {
   @IsNotEmpty()
   @IsString()
   firstName: string;
@@ -8,6 +14,21 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   lastName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @IsEmail()
+  email: string;
+}
+
+export class UpsertUserDto extends CreateUserDto {
+  @IsNotEmpty()
+  @IsString()
+  pictureUrl: string;
+
+  @IsNotEmpty()
+  @IsString()
+  googleJwtToken: string;
 }
 
 export class UserIdWithFileIdDto {
@@ -18,4 +39,10 @@ export class UserIdWithFileIdDto {
   @IsNotEmpty()
   @IsString()
   fileId: string;
+}
+
+export class VerifyJwtTokenDto {
+  @IsNotEmpty()
+  @IsString()
+  jwtGoogleToken: string;
 }
