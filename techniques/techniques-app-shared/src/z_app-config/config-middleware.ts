@@ -9,7 +9,13 @@ import * as connectRedis from 'connect-redis';
 import { createClient } from 'redis';
 
 export async function configureGlobalMiddelware(app: NestExpressApplication) {
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true, exposeDefaultValues: true },
+    }),
+  );
 
   //https://www.npmjs.com/package/cors
   app.use(

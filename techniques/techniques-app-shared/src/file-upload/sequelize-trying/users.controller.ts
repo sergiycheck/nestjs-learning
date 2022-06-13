@@ -1,6 +1,14 @@
 import { GoogleAuthToLocalService } from './google-auth-to-local/google-auth-to-local.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { CreateUserDto, UpsertUserDto, UserIdWithFileIdDto, VerifyJwtTokenDto } from './dtos.dto';
+import {
+  CreateUserDto,
+  UpsertUserDto,
+  UserIdWithFileIdDto,
+  VerifyJwtTokenDto,
+  CreateUserApiDescription,
+  AddPhotoToUserApiDescription,
+  FindAllDto,
+} from './dtos.dto';
 import { UsersService } from './users.service';
 import {
   Controller,
@@ -20,7 +28,7 @@ import {
 import { imageFileFilter, imageFileFilterIfFileExists } from './../file-upload.utils';
 import { ErrorsInterceptor } from './error.interceptor';
 import { Request, Response } from 'express';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
 const maxFilesCountToUploadAtOnce = 10;
@@ -34,7 +42,12 @@ export class UsersController {
     private googleAuthToLocalService: GoogleAuthToLocalService,
   ) {}
 
+  @ApiConsumes('multipart/form-data')
   @Post()
+  @ApiBody({
+    description: 'create user with or without photos',
+    type: CreateUserApiDescription,
+  })
   @UseInterceptors(
     ErrorsInterceptor,
     FilesInterceptor('file[]', maxFilesCountToUploadAtOnce, {
@@ -45,7 +58,12 @@ export class UsersController {
     return this.usersService.createUserWithManyPhotos(data, files);
   }
 
-  @Post(':userId/add-photos')
+  @ApiConsumes('multipart/form-data')
+  @Post(':userId/add-photo')
+  @ApiBody({
+    description: 'add photo to user',
+    type: AddPhotoToUserApiDescription,
+  })
   @UseInterceptors(ErrorsInterceptor, FileInterceptor('file', { fileFilter: imageFileFilter }))
   async addPhotos(@Param('userId') userId: string, @UploadedFile() file: Express.Multer.File) {
     return this.usersService.addOnePhoto(userId, file.buffer, file.originalname);
@@ -57,8 +75,9 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @ApiQuery({ name: 'finAllOption', type: FindAllDto })
+  findAll(@Query() findAllDto: FindAllDto) {
+    return this.usersService.findAll(findAllDto);
   }
 
   @Get('one')
