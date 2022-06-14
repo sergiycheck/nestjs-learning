@@ -75,7 +75,6 @@ export class UsersController {
   }
 
   @Get()
-  @ApiQuery({ name: 'finAllOption', type: FindAllDto })
   findAll(@Query() findAllDto: FindAllDto) {
     return this.usersService.findAll(findAllDto);
   }

@@ -1,0 +1,7 @@
+version: '3.9'
+
+services:
+  backend-app:
+    image: node:16.16.0
+    volumes:
+      - ./:/home/node/nestjs_shared_app

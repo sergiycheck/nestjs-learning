@@ -3,7 +3,6 @@ import { Logger, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { createProxyMiddleware, Options } from 'http-proxy-middleware';
-import { PORT } from '../app-defaults';
 
 @Injectable()
 export class AppProxyService {
@@ -14,6 +13,8 @@ export class AppProxyService {
     private readonly configService: ConfigService,
   ) {
     const expressInstance = this.httpAdapterHost.httpAdapter.getInstance() as ExpressAdapter;
+
+    const PORT = +configService.get('PORT');
 
     const config: Options = {
       target: `https://localhost:${PORT}`,

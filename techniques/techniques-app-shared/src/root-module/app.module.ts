@@ -30,6 +30,9 @@ import { APP_FILTER } from '@nestjs/core';
       cache: true,
       expandVariables: true,
       validationSchema: Joi.object({
+        PORT: Joi.number().required(),
+        PROXY_PORT: Joi.number().required(),
+        //
         MULTER_DEST: Joi.string().required(),
         BUCKET_NAME: Joi.string().required(),
         IMAGES_PUBLIC_BUCKET: Joi.string().required(),
