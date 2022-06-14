@@ -37,6 +37,12 @@ $ chmod a+rx my-script.sh
 $ ./my-script.sh
 ```
 
+#### make file executable alternative
+
+```bash
+chmod 755 first.sh
+```
+
 ### prerequisites
 
 generate localhost private key and public certificate with **mkcert** tool
@@ -89,8 +95,14 @@ check open port [link](https://www.cyberciti.biz/faq/unix-linux-check-if-port-is
 sudo lsof -i -P -n | grep LISTEN
 ```
 
+main docker, docker-compose tutorial
+[docker link](https://docs.docker.com/get-started/05_persisting_data/)
+
 redis docker compose tutorial
 [link](https://geshan.com.np/blog/2022/01/redis-docker/)
 
 library for sequelize migrations umzug github
 [link](https://github.com/sequelize/umzug)
+
+if the database state is equal to provided
+migrations, not migration applied
