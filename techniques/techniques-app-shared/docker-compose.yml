@@ -1,7 +1,49 @@
 version: '3.9'
 
 services:
-  backend-app:
-    image: node:16.16.0
+  backend_app:
+    image: node:16.15.0
+    command: sh -c "npm i && npm run migrate:prod && npm run start:prod"
+    ports:
+      - '3030:3030'
+      - '3048:3048'
+    working_dir: /home/node/nestjs_shared_app
     volumes:
       - ./:/home/node/nestjs_shared_app
+    env_file:
+      - ./.env
+    environment:
+      - PG_DB_HOST=postgress_db
+      - REDIS_HOST=redis_cache
+    restart: always
+
+  postgress_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dev
+      PGDATA: /var/lib/postgresql/12/main
+    volumes:
+      - pg_db:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8089:8080
+  redis_cache:
+    image: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    ports:
+      - 6380:6379
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local
+  pg_db:
+    driver: local

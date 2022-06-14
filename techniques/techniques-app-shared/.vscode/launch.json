@@ -8,6 +8,14 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "start:debug"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "debug migration",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "migrate:dev"],
+      "console": "integratedTerminal"
     }
   ]
 }

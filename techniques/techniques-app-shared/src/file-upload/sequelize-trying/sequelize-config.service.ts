@@ -17,7 +17,7 @@ export class SequelizeConfigService implements SequelizeOptionsFactory {
       //or
 
       autoLoadModels: true,
-      synchronize: true,
+      // synchronize: true, //use migrations instead of synchronize
       retryAttempts: 1,
     };
   }

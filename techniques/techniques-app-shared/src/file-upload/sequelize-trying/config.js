@@ -2,6 +2,8 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+// TODO: fix error ERROR: Could not find migration method: up
+
 module.exports = {
   development: {
     dialect: 'postgres',

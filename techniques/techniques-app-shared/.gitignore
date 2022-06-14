@@ -36,3 +36,4 @@ lerna-debug.log*
 .env
 secrets
 client_secret_64354824849-vq4ld6pgbhls3ka237fuu9d79qq6btiv.apps.googleusercontent.com.json
+/pg_db_data

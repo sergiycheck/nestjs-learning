@@ -38,7 +38,12 @@ export async function configureGlobalMiddelware(app: NestExpressApplication) {
 export function configRedisWithSession(app: NestExpressApplication) {
   const configService = app.get(ConfigService);
   const RedisStore = connectRedis(session);
-  const redisClient = createClient({ legacyMode: true, url: 'redis://localhost:6379' });
+  const REDIS_HOST = configService.get('REDIS_HOST');
+  const REDIS_PORT = +configService.get('REDIS_PORT');
+  const redisClient = createClient({
+    legacyMode: true,
+    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+  });
   redisClient.connect();
 
   const sess: session.SessionOptions = {

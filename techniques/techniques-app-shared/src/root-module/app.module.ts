@@ -39,6 +39,9 @@ import { APP_FILTER } from '@nestjs/core';
         IAM_USER_KEY_ID: Joi.string().required(),
         IAM_USER_SECRET_ACCESS_KEY: Joi.string().required(),
         //
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
+        //
         PG_DB_HOST: Joi.string().required(),
         PG_DB_PORT: Joi.number().required(),
         PG_DB_USERNAME: Joi.string().required(),
@@ -67,11 +70,20 @@ import { APP_FILTER } from '@nestjs/core';
     CronTasksSchedulingModule, //logs message to console
 
     //queue
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379, //redis port
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const REDIS_HOST = configService.get('REDIS_HOST');
+        const REDIS_PORT = +configService.get('REDIS_PORT');
+
+        return {
+          redis: {
+            host: REDIS_HOST,
+            port: REDIS_PORT,
+          },
+        };
       },
+      inject: [ConfigService],
     }),
     RegisterQueueModule,
 

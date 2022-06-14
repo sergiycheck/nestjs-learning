@@ -1,7 +1,7 @@
 'use strict';
 
 /*eslint-disable*/
-const { TableNames } = require('./table-names');
+const { TableNames } = require('../table-names');
 /*eslint-enable*/
 
 module.exports = {
