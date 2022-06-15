@@ -10,15 +10,20 @@ services:
       - '3030:3030'
     volumes:
       - ./:/home/node/nestjs_shared_app
-    # setting environment for learning & demonstration purposes
+    # loadint env from file
+    env_file:
+      - ./.env
+    # overriding and adding some variables
     environment:
-      - migrateDevArg=1
+      # set migrateDevArg=1 to run migration or 0 not to run migration
+      - migrateDevArg=0
       - PG_DB_HOST=postgress_db
       - REDIS_HOST=redis_cache
     restart: always
     depends_on:
       - postgress_db
       - redis_cache
+    command: sh -c './entrypoint.sh'
   postgress_db:
     image: postgres
     restart: always
@@ -26,7 +31,6 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_DB: dev
-      PGDATA: /var/lib/postgresql/12/main
     volumes:
       - pg_db:/var/lib/postgresql/data
     ports:
