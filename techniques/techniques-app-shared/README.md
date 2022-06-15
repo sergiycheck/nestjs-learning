@@ -69,6 +69,9 @@ Stop the container(s) using the following command:
 
 ```bash
 docker-compose down
+#or
+# to remove volumes also
+docker-compose down --volumes
 ```
 
 Delete all containers using the following command:
