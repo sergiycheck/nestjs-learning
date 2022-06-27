@@ -9,7 +9,13 @@ import * as connectRedis from 'connect-redis';
 import { createClient } from 'redis';
 
 export async function configureGlobalMiddelware(app: NestExpressApplication) {
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true, exposeDefaultValues: true },
+    }),
+  );
 
   //https://www.npmjs.com/package/cors
   app.use(
@@ -32,7 +38,12 @@ export async function configureGlobalMiddelware(app: NestExpressApplication) {
 export function configRedisWithSession(app: NestExpressApplication) {
   const configService = app.get(ConfigService);
   const RedisStore = connectRedis(session);
-  const redisClient = createClient({ legacyMode: true, url: 'redis://localhost:6379' });
+  const REDIS_HOST = configService.get('REDIS_HOST');
+  const REDIS_PORT = +configService.get('REDIS_PORT');
+  const redisClient = createClient({
+    legacyMode: true,
+    url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
+  });
   redisClient.connect();
 
   const sess: session.SessionOptions = {

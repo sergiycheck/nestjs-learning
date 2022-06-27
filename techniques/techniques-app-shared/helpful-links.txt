@@ -13,3 +13,10 @@ http://expressjs.com/en/5x/api.html#path-examples
 
 serve localhost site over https
 https://web.dev/how-to-use-local-https/
+
+sh command reference
+https://www.computerhope.com/unix/ush.htm
+
+spaces in docker/docker-compose file
+https://stackoverflow.com/questions/46141148/declare-env-variable-which-value-include-space-for-docker-docker-compose/46141244#46141244
+

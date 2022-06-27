@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 
 //configuring dotenv breaks multer. Multer does not work with configured dotenv
@@ -5,7 +6,6 @@ import { NestFactory } from '@nestjs/core';
 // dotenv.config();
 
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { PORT, PROXY_PORT } from './app-defaults';
 import { AppProxyModule } from './proxy/app-proxy.module';
 import {
   configureAndListenApiServer,
@@ -16,6 +16,10 @@ import {
 async function bootstrap() {
   const appApi = await getAppNestExpressApp();
   const appApiProxy = await NestFactory.create<NestExpressApplication>(AppProxyModule);
+
+  const configService = appApi.get(ConfigService);
+  const PROXY_PORT = +configService.get('PROXY_PORT');
+  const PORT = +configService.get('PORT');
 
   configureAndListenProxyServer(appApiProxy, PROXY_PORT);
   configureAndListenApiServer(appApi, PORT);

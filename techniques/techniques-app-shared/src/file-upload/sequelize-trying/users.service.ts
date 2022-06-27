@@ -1,11 +1,6 @@
 import { UploaderToS3Service } from './../services/uploaderToS3.service';
-import { CreateUserDto, UserIdWithFileIdDto, UpsertUserDto } from './dtos.dto';
-import {
-  ForbiddenException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { CreateUserDto, UserIdWithFileIdDto, UpsertUserDto, FindAllDto } from './dtos.dto';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User } from './users.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -101,8 +96,15 @@ export class UsersService {
     };
   }
 
-  async findAll() {
-    const allUsers = await this.userModel.findAll({ include: [PublicFile] });
+  async findAll(findAllDto: FindAllDto) {
+    const limit = 10;
+
+    const allUsers = await this.userModel.findAll({
+      include: [PublicFile],
+      order: [['email', 'DESC']],
+      offset: Number(findAllDto.page) * limit,
+      limit: limit,
+    });
 
     return Promise.all(
       allUsers.map(async (user) => await this.mapPopulateUserWithPhotos(user.toJSON())),

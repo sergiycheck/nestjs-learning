@@ -3,4 +3,5 @@ const path = require('path');
 module.exports = {
   config: path.resolve('src/file-upload/sequelize-trying', 'config.js'),
   'migrations-path': path.resolve('src/file-upload/sequelize-trying', 'migrations'),
+  debug: true,
 };

@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  backend_app:
+    container_name: backend_shared_api
+    build:
+      context: .
+    ports:
+      - '3048:3048'
+      - '3030:3030'
+    volumes:
+      - ./:/home/node/nestjs_shared_app
+    # loadint env from file. environment variables're accessible in dockerfile and called bash scripts
+    env_file:
+      - ./.env
+    # overriding and adding some variables
+    environment:
+      # set migrateDevArg=1 to run migration or 0 not to run migration
+      - migrateDevArg=0
+      - PG_DB_HOST=postgress_db
+      - REDIS_HOST=redis_cache
+    restart: always
+    depends_on:
+      - postgress_db
+      - redis_cache
+    command: sh -c './entrypoint.sh'
+  postgress_db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: dev
+    volumes:
+      - pg_db:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8089:8080
+  redis_cache:
+    image: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning
+    ports:
+      - 6380:6379
+    volumes:
+      - cache:/data
+volumes:
+  cache:
+    driver: local
+  pg_db:
+    driver: local
