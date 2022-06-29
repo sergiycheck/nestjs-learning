@@ -11,6 +11,5 @@ export function BaseResolver<T extends Type<unknown>>(classRef: T): any {
       return [];
     }
   }
-
   return BaseResolverHost;
 }

@@ -1,7 +1,5 @@
+import { CreatePostInput, Post, UpdatePostInput } from './../../graphql';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreatePostInput } from './dto/create-post.input';
-import { UpdatePostInput } from './dto/update-post.input';
-import { Post } from './entities/post.entity';
 
 type FindAllParams = {
   authorId?: number;
@@ -31,29 +29,43 @@ export const posts: Post[] = [
 @Injectable()
 export class PostsService {
   create(createPostInput: CreatePostInput) {
-    return 'This action adds a new post';
+    const post: Post = {
+      ...createPostInput,
+      id: posts[posts.length - 1].id + 1,
+      votes: 0,
+    };
+    posts.push(post);
+    return post;
   }
 
-  findAll(params?: FindAllParams) {
+  findAll() {
+    return posts;
+  }
+
+  findAllByAuthor(params?: FindAllParams) {
     if (params?.authorId)
       return posts.filter((p) => p.authorId === params.authorId);
     return posts;
   }
-
   findOne(id: number) {
     const p = posts.find((p) => p.id === id);
     if (!p) return new NotFoundException(`post with id ${id} was not found`);
     return p;
   }
-
   update(id: number, updatePostInput: UpdatePostInput) {
-    return `This action updates a #${id} post`;
-  }
+    const p = this.findOne(id) as Post;
+    posts[p.id] = {
+      ...p,
+      ...updatePostInput,
+    };
 
+    return p;
+  }
   remove(id: number) {
-    return `This action removes a #${id} post`;
+    const p = this.findOne(id);
+    posts.filter((p) => p.id !== id);
+    return p;
   }
-
   upvoteById({ id }: { id: number }) {
     const post = this.findOne(id) as Post;
     post.votes++;

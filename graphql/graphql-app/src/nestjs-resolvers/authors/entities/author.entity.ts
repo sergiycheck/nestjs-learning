@@ -14,7 +14,7 @@ export class Author extends BaseEntity {
   @Field({ nullable: true })
   lastName?: string;
 
-  @Field((type) => [Post])
+  @Field((type) => [Post], { nullable: 'items' })
   posts: Post[];
 }
 

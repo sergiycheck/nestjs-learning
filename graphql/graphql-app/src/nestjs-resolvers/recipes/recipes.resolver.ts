@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Resolver } from '@nestjs/graphql';
-import { BaseResolver } from '../base.resolver';
+import { BaseResolver } from '../shared/generic.resolver';
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
