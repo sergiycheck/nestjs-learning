@@ -1,3 +1,15 @@
+## Run in docker
+
+```bash
+docker-compose up --build
+```
+
+with docker volumes data is persisted. You can connect to each container and see db data and cached data with command.
+
+```bash
+docker exec -it 1d6d55b6df35 /bin/bash
+```
+
 ## Installation
 
 ```bash

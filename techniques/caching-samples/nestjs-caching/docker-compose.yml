@@ -22,6 +22,8 @@ services:
       - MONGODB_AUTH_SOURCE=admin
 
       - CACHE_TTL=10
+      - REDIS_CACHE_HOST=redis_cache
+      - REDIS_CACHE_PORT=6379
 
     depends_on:
       - mongo_db
@@ -37,3 +39,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: serhii
       MONGO_INITDB_ROOT_PASSWORD: serhii_pass
       MONGO_INITDB_DATABASE: nestjs-http-todo
+  redis_cache:
+    image: redis:latest
+    restart: always
+    volumes:
+      - $PWD/redis_data:/usr/local/etc/redis

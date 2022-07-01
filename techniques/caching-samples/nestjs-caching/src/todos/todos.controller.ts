@@ -28,6 +28,8 @@ export class TodosController {
     return this.todosService.create(createTodoDto);
   }
 
+  // this cacheKey is overwritten by /todos/62bebaed5ee1d81fa4e25a05
+  // if CacheTTL is not specified
   @CacheTTL(60)
   @Get()
   findAll() {
