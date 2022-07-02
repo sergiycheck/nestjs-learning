@@ -1,16 +1,16 @@
 import { BaseAwsDataService } from './../common/services/base-aws-data.service';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client } from '@aws-sdk/client-s3';
+import { CloudWatchClient } from '@aws-sdk/client-cloudwatch';
 
 @Injectable()
-export class S3ManagerService extends BaseAwsDataService {
-  private S3Client: S3Client;
+export class AwsCloudWatchService extends BaseAwsDataService {
+  cloudWatchClient: CloudWatchClient;
 
   constructor(protected configService: ConfigService) {
     super(configService);
 
-    this.S3Client = new S3Client({
+    this.cloudWatchClient = new CloudWatchClient({
       region: this.AWS_REGION,
       credentials: {
         accessKeyId: this.IAM_USER_KEY_ID,
@@ -18,9 +18,5 @@ export class S3ManagerService extends BaseAwsDataService {
       },
       logger: console,
     });
-  }
-
-  get S3() {
-    return this.S3Client;
   }
 }
