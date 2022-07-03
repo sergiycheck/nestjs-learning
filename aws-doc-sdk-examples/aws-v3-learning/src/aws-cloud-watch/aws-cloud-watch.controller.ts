@@ -1,11 +1,15 @@
 import { PutMetricsDto, DeleteAlarmDto } from './dtos/dtos.dto';
 import { AwsCloudWatchService } from './aws-cloud-watch.service';
 import { AllExceptionsFromAwsFilter } from './../common/filters/all-exceptions-from-aws.filter';
-import { Body, Controller, Delete, Get, Put, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import {
   DeleteAlarmsCommand,
   DescribeAlarmsCommand,
+  DisableAlarmActionsCommand,
+  EnableAlarmActionsCommand,
+  EnableAlarmActionsCommandInput,
+  EnableInsightRulesCommandInput,
   PutMetricAlarmCommand,
   PutMetricAlarmCommandInput,
 } from '@aws-sdk/client-cloudwatch';
@@ -65,6 +69,55 @@ export class AwsCloudWatchController {
   async deleteAlarm(@Body() deleteDto: DeleteAlarmDto) {
     return await this.cloudWatchService.cloudWatchClient.send(
       new DeleteAlarmsCommand({ ...deleteDto }),
+    );
+  }
+
+  @Put('put-enable-metric-alarm')
+  async putEnableMetricsAlarm(@Body() putMetricsDto: PutMetricsDto) {
+    const params: PutMetricAlarmCommandInput = {
+      ...putMetricsDto,
+      ComparisonOperator: 'GreaterThanThreshold',
+      EvaluationPeriods: 1,
+      MetricName: 'CPUUtilization',
+      Namespace: 'AWS/EC2',
+      Period: 60,
+      Statistic: 'Average',
+      Threshold: 70.0,
+      ActionsEnabled: false,
+      AlarmActions: ['ACTION_ARN'], //e.g., "arn:aws:automate:us-east-1:ec2:stop"
+      Dimensions: [
+        {
+          Name: 'InstanceId',
+          Value: 'INSTANCE_ID',
+        },
+      ],
+      Unit: 'Percent',
+    };
+
+    const result: any = {};
+    const resultPutMetrics = await this.cloudWatchService.cloudWatchClient.send(
+      new PutMetricAlarmCommand(params),
+    );
+
+    result.resultPutMetrics = resultPutMetrics;
+
+    const paramsEnableAlarmAction: EnableAlarmActionsCommandInput = {
+      AlarmNames: [params.AlarmName],
+    };
+
+    const enableMetricsResult = await this.cloudWatchService.cloudWatchClient.send(
+      new EnableAlarmActionsCommand(paramsEnableAlarmAction),
+    );
+
+    result.enableMetricsResult = enableMetricsResult;
+
+    return result;
+  }
+
+  @Post('disable-alarm')
+  async disabeAlarmCommand(@Body() deleteDto: DeleteAlarmDto) {
+    return await this.cloudWatchService.cloudWatchClient.send(
+      new DisableAlarmActionsCommand({ ...deleteDto }),
     );
   }
 }
