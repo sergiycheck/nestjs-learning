@@ -1,8 +1,14 @@
+import { PutMetricsDto, DeleteAlarmDto } from './dtos/dtos.dto';
 import { AwsCloudWatchService } from './aws-cloud-watch.service';
 import { AllExceptionsFromAwsFilter } from './../common/filters/all-exceptions-from-aws.filter';
-import { Controller, Get, UseFilters } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Put, UseFilters } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { DescribeAlarmsCommand } from '@aws-sdk/client-cloudwatch';
+import {
+  DeleteAlarmsCommand,
+  DescribeAlarmsCommand,
+  PutMetricAlarmCommand,
+  PutMetricAlarmCommandInput,
+} from '@aws-sdk/client-cloudwatch';
 
 @ApiTags('AwsCloudWatchController')
 @Controller('aws-cloud-watch')
@@ -25,5 +31,40 @@ export class AwsCloudWatchController {
     return {
       data,
     };
+  }
+
+  @Put('put-metric-alarm')
+  async putMetricsAlarm(@Body() putMetricsDto: PutMetricsDto) {
+    const params: PutMetricAlarmCommandInput = {
+      ...putMetricsDto,
+      ComparisonOperator: 'GreaterThanThreshold',
+      EvaluationPeriods: 1,
+      MetricName: 'CPUUtilization',
+      Namespace: 'AWS/EC2',
+      Period: 60,
+      Statistic: 'Average',
+      Threshold: 70.0,
+      ActionsEnabled: false,
+      Dimensions: [
+        {
+          Name: 'InstanceId',
+          Value: 'INSTANCE_ID',
+        },
+      ],
+      Unit: 'Percent',
+    };
+
+    const result = await this.cloudWatchService.cloudWatchClient.send(
+      new PutMetricAlarmCommand(params),
+    );
+
+    return result;
+  }
+
+  @Delete('delete-alarm')
+  async deleteAlarm(@Body() deleteDto: DeleteAlarmDto) {
+    return await this.cloudWatchService.cloudWatchClient.send(
+      new DeleteAlarmsCommand({ ...deleteDto }),
+    );
   }
 }
