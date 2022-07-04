@@ -1,17 +1,29 @@
-import { PutMetricsDto, DeleteAlarmDto } from './dtos/dtos.dto';
+import { PutMetricsDto, DeleteAlarmDto, ListMetricsDto } from './dtos/dtos.dto';
 import { AwsCloudWatchService } from './aws-cloud-watch.service';
 import { AllExceptionsFromAwsFilter } from './../common/filters/all-exceptions-from-aws.filter';
-import { Body, Controller, Delete, Get, Post, Put, UseFilters } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseFilters,
+} from '@nestjs/common';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import {
   DeleteAlarmsCommand,
   DescribeAlarmsCommand,
   DisableAlarmActionsCommand,
   EnableAlarmActionsCommand,
   EnableAlarmActionsCommandInput,
-  EnableInsightRulesCommandInput,
+  ListMetricsCommand,
+  ListMetricsInput,
   PutMetricAlarmCommand,
   PutMetricAlarmCommandInput,
+  PutMetricDataCommand,
+  PutMetricDataCommandInput,
 } from '@aws-sdk/client-cloudwatch';
 
 @ApiTags('AwsCloudWatchController')
@@ -118,6 +130,47 @@ export class AwsCloudWatchController {
   async disabeAlarmCommand(@Body() deleteDto: DeleteAlarmDto) {
     return await this.cloudWatchService.cloudWatchClient.send(
       new DisableAlarmActionsCommand({ ...deleteDto }),
+    );
+  }
+
+  @Get('list-metrics')
+  async listMetrics(@Query() listMetricsDto: ListMetricsDto) {
+    const params: ListMetricsInput = {
+      Dimensions: [
+        {
+          Name: listMetricsDto.Dimensions_Name,
+        },
+      ],
+      MetricName: listMetricsDto.MetricName,
+      Namespace: 'AWS/Logs',
+    };
+
+    return await this.cloudWatchService.cloudWatchClient.send(
+      new ListMetricsCommand(params),
+    );
+  }
+
+  @Put('put-metrics-data')
+  async putMetricsData() {
+    const params: PutMetricDataCommandInput = {
+      MetricData: [
+        {
+          MetricName: 'PAGES_VISITED',
+          Dimensions: [
+            {
+              Name: 'UNIQUE_PAGES',
+              Value: 'URLS',
+            },
+          ],
+          Unit: 'None',
+          Value: 1.0,
+        },
+      ],
+      Namespace: 'SITE/TRAFFIC',
+    };
+
+    return await this.cloudWatchService.cloudWatchClient.send(
+      new PutMetricDataCommand(params),
     );
   }
 }
