@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
-// import { PickType } from '@nestjs/mapped-types';
+import { IsArray, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
 
 export class PutMetricsDto {
   @IsNotEmpty()
@@ -61,4 +61,47 @@ export class PutTargetParamsDto {
   @IsNotEmpty()
   @IsString()
   Targets_Id = 'myCloudWatchEventsTarget';
+}
+
+export class DescribeFilterDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ name: 'logGroupName', type: String })
+  logGroupName = '/aws/lambda/sub-filt-lambda-identical-dev-hello/another';
+
+  @IsNotEmpty()
+  @IsInt()
+  limit = 5;
+}
+
+export class CreateSubscriptionFilterDto {
+  @IsNotEmpty()
+  @IsString()
+  destinationArn =
+    'arn:aws:lambda:eu-central-1:581425740433:function:sub-filt-lambda-identical-dev-hello';
+
+  @IsNotEmpty()
+  @IsString()
+  filterName = 'filter-for-lambda-2';
+
+  @IsNotEmpty()
+  @IsString()
+  filterPattern = 'ERROR';
+
+  @IsNotEmpty()
+  @IsString()
+  logGroupName = '/aws/lambda/sub-filt-lambda-identical-dev-hello/another';
+}
+
+export class DeleteSubscriptionFilter extends PickType(CreateSubscriptionFilterDto, [
+  'filterName',
+  'logGroupName',
+] as const) {
+  @IsNotEmpty()
+  @IsString()
+  filterName = 'filter-for-lambda-2';
+
+  @IsNotEmpty()
+  @IsString()
+  logGroupName = '/aws/lambda/sub-filt-lambda-identical-dev-hello/another';
 }
