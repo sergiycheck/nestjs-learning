@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from 'joi';
 import { APP_FILTER } from '@nestjs/core';
 import { AwsLambdaModule } from '../aws-lambda/aws-lambda.module';
+import { AwsDynamoDbModule } from '../aws-dynamo-db/aws-dynamo-db.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AwsLambdaModule } from '../aws-lambda/aws-lambda.module';
     S3ManagerModule,
     AwsLambdaModule,
     AwsCloudWatchModule,
+    AwsDynamoDbModule,
   ],
   controllers: [AppController],
   providers: [
