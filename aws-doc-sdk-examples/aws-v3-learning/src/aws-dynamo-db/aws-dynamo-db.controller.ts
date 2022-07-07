@@ -36,6 +36,9 @@ import {
 // core components of dynamodb
 // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.CoreComponents.html
 
+// orm for dynamodb
+// https://github.com/dynamoose/dynamoose
+
 @ApiTags('AwsDynamoDbController')
 @Controller('aws-dynamodb')
 @UseFilters(AllExceptionsFromAwsFilter)
@@ -92,6 +95,9 @@ export class AwsDynamoDbController {
   deleteTable(@Query() dto: DescribeTableDto) {
     return this.cldWS.dDBCl.send(new DeleteTableCommand({ ...dto }));
   }
+
+  // AttributeDefinition
+  // https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_AttributeDefinition.html
 
   @Post('create-table-customers')
   async craateTableCustomers(@Body() createTableDto: CreateTableDto) {
@@ -160,6 +166,8 @@ export class AwsDynamoDbController {
     return this.cldWS.dDBCl.send(new GetItemCommand(params));
   }
 
+  // update expressions
+  // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Expressions.UpdateExpressions.html
   @Patch('update-customer/:TableName')
   updateCustomer(
     @Param('TableName', new NotEmptyPipe('TableName')) TableName: string,

@@ -11,7 +11,7 @@ export class DescribeTableDto {
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ name: 'TableName', type: String })
-  TableName = 'TEST_TABLE';
+  TableName = 'CUSTOMERS';
 }
 
 export class CreateCustomerDto {
@@ -52,4 +52,52 @@ export class UpdateCustomerDto {
   @IsNotEmpty()
   @IsNumberString()
   updatePhone = '133233233';
+}
+
+export class Dynamo_N {
+  @IsNotEmpty()
+  @IsNumberString()
+  N: string;
+}
+
+export class Dynamo_S {
+  @IsNotEmpty()
+  @IsString()
+  S: string;
+}
+
+export class ReadCustomersBatchDto {
+  @IsNotEmpty()
+  @IsString()
+  TABLE_NAME = 'CUSTOMERS';
+
+  @IsNotEmpty()
+  keys: Record<string, Dynamo_N>;
+}
+
+export class WriteCustomersBatchDto {
+  @IsNotEmpty()
+  @IsString()
+  TABLE_NAME = 'CUSTOMERS';
+}
+
+export class ListItemsDto {
+  @IsNotEmpty()
+  @IsString()
+  @ApiProperty({ name: 'TableName', type: String })
+  TableName = 'CUSTOMERS';
+}
+
+export class QueryItemsDto extends ListItemsDto {
+  @IsNotEmpty()
+  @IsNumberString()
+  custId = '3';
+
+  @IsNotEmpty()
+  @IsString()
+  custName = 'Denis Olsem';
+
+  @IsNotEmpty()
+  @IsString()
+  email = 'den@domain.com';
 }
