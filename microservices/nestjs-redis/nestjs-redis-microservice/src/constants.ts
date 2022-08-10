@@ -1,0 +1,1 @@
+export const REDIS_PROXY_CLIENT = 'REDIS_PROXY_CLIENT';

@@ -16,7 +16,7 @@ services:
     # overriding and adding some variables
     environment:
       # set migrateDevArg=1 to run migration or 0 not to run migration
-      - migrateDevArg=0
+      - migrateDevArg=1
       - PG_DB_HOST=postgress_db
       - REDIS_HOST=redis_cache
     restart: always

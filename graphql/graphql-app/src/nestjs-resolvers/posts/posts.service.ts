@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostInput } from './dto/create-post.input';
 import { UpdatePostInput } from './dto/update-post.input';
 import { Post } from './entities/post.entity';
@@ -41,7 +41,9 @@ export class PostsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    const p = posts.find((p) => p.id === id);
+    if (!p) return new NotFoundException(`post with id ${id} was not found`);
+    return p;
   }
 
   update(id: number, updatePostInput: UpdatePostInput) {
@@ -50,5 +52,11 @@ export class PostsService {
 
   remove(id: number) {
     return `This action removes a #${id} post`;
+  }
+
+  upvoteById({ id }: { id: number }) {
+    const post = this.findOne(id) as Post;
+    post.votes++;
+    return post;
   }
 }

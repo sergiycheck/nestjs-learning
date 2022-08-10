@@ -31,6 +31,7 @@ type Mutation {
   removePost(id: Int!): Post!
   updateAuthor(updateAuthorInput: UpdateAuthorInput!): Author!
   updatePost(updatePostInput: UpdatePostInput!): Post!
+  upvotePost(upvotePostData: UpvotePostInput!): Post!
 }
 
 type Post {
@@ -57,4 +58,8 @@ input UpdatePostInput {
   """Example field (placeholder)"""
   exampleField: Int
   id: Int!
+}
+
+input UpvotePostInput {
+  postId: Int!
 }

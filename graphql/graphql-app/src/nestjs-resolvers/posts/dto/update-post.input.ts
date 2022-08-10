@@ -6,3 +6,9 @@ export class UpdatePostInput extends PartialType(CreatePostInput) {
   @Field(() => Int)
   id: number;
 }
+
+@InputType()
+export class UpvotePostInput {
+  @Field(() => Int)
+  postId: number;
+}
