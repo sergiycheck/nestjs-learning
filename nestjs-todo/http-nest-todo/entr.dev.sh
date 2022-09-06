@@ -4,4 +4,4 @@ env
 
 set -e
 
-exec npm run start:dbg
+exec yarn run start:dbg
