@@ -3,6 +3,7 @@ import { Module } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { TodosController } from './todos.controller';
 import { Todo, TodoSchema } from './entities/todo.entity';
+import { TodosMapService } from './todos-map.service';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { Todo, TodoSchema } from './entities/todo.entity';
     ]),
   ],
   controllers: [TodosController],
-  providers: [TodosService],
+  providers: [TodosService, TodosMapService],
 })
 export class TodosModule {}
