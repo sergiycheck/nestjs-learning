@@ -1,3 +1,4 @@
+import { ResponseTodo } from './dto/responses.dto';
 import { TodosMapService } from './todos-map.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -5,6 +6,7 @@ import { LeanDocument, Model } from 'mongoose';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { Todo, TodoDocument } from './entities/todo.entity';
+import { FindAllDto } from './dto/findAll.dto';
 
 @Injectable()
 export class TodosService {
@@ -22,8 +24,9 @@ export class TodosService {
     return this.todosMapService.mapResponse(obj);
   }
 
-  async findAll() {
-    const arrQuery = await this.model.find({});
+  async findAll(dto: FindAllDto) {
+    const skip = (dto.page - 1) * dto.limit;
+    const arrQuery = await this.model.find({}).skip(skip).limit(dto.limit);
     return arrQuery.map((o) => this.todosMapService.mapResponse(o.toObject()));
   }
 
@@ -48,7 +51,7 @@ export class TodosService {
     return this.todosMapService.mapResponse(updateTodo);
   }
 
-  remove(id: string) {
-    return this.model.deleteOne({ _id: id });
+  async remove(id: string) {
+    return await this.model.deleteOne({ _id: id });
   }
 }

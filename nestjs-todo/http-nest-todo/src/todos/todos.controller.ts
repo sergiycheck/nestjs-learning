@@ -1,10 +1,22 @@
+import { FindAllDto } from './dto/findAll.dto';
 import { CustomParseObjectIdPipe } from './../pipes/custom-parse-objectid.pipe';
 import { NotEmptyPipe } from './../pipes/not-empty.pipe';
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  BadRequestException,
+} from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { validate } from 'class-validator';
 
 @ApiTags('TodosController')
 @Controller('todos')
@@ -17,8 +29,12 @@ export class TodosController {
   }
 
   @Get()
-  findAll() {
-    return this.todosService.findAll();
+  async findAll(@Query('page') page: number, @Query('limit') limit: number) {
+    const dto = new FindAllDto({ page, limit });
+    const errs = await validate(dto);
+    if (errs.length)
+      throw new BadRequestException(errs.map((err) => ({ contraint: err.constraints })));
+    return this.todosService.findAll(dto);
   }
 
   @Get(':id')
