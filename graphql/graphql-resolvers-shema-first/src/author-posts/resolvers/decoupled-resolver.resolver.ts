@@ -21,6 +21,7 @@ export class AuthorsResolver {
 
   @Mutation()
   createPost(@Args('input') createPostInput: CreatePostInput) {
+    console.log('createPostInput', createPostInput);
     return this.postsService.create(createPostInput);
   }
 
