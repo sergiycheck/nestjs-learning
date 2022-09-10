@@ -1,0 +1,37 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Todo {
+  """Int id of todo"""
+  id: Int!
+  name: String!
+  createdAt: Float!
+  isDone: Boolean
+  tag: String
+}
+
+type Query {
+  todos: [Todo!]!
+  todo(id: Int!): Todo!
+  getTodosByArgs(tag: String = "", name: String): [Todo!]!
+}
+
+type Mutation {
+  createTodo(createTodoInput: CreateTodoInput!): Todo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
+  removeTodo(id: Int!): Todo!
+}
+
+input CreateTodoInput {
+  name: String!
+  isDone: Boolean
+  tag: String
+}
+
+input UpdateTodoInput {
+  name: String
+  isDone: Boolean
+  tag: String
+  id: Int!
+}

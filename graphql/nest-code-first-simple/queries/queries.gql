@@ -1,0 +1,76 @@
+mutation Mutation($createTodoInput: CreateTodoInput!) {
+  createTodo(createTodoInput: $createTodoInput) {
+    id
+    name
+    isDone
+    tag
+    createdAt
+  }
+}
+
+query findAll {
+  todos {
+    id
+    name
+    createdAt
+    isDone
+    tag
+  }
+}
+
+query findOne($todoId: Int!) {
+  todo(id: $todoId) {
+    id
+    name
+    createdAt
+    isDone
+    tag
+  }
+}
+
+query Query($tag: String, $name: String) {
+  getTodosByArgs(tag: $tag, name: $name) {
+    id
+    name
+    createdAt
+    isDone
+    tag
+  }
+}
+
+mutation Mutation($removeTodoId: Int!) {
+  removeTodo(id: $removeTodoId) {
+    id
+    name
+    createdAt
+    isDone
+    tag
+  }
+}
+
+mutation Mutation($updateTodoInput: UpdateTodoInput!) {
+  updateTodo(updateTodoInput: $updateTodoInput) {
+    id
+    name
+    createdAt
+    isDone
+    tag
+  }
+}
+
+# {
+#   "createTodoInput": {
+#     "isDone": false,
+#     "name": "new 1",
+#     "tag": "tag 1"
+#   },
+#   "updateTodoInput": {
+#     "id": 1,
+#     "name": "changed name",
+#     "isDone": true
+#   },
+#   "todoId": 3,
+#   "tag": "coding",
+#   "name": "do",
+#   "removeTodoId": 4
+# }
