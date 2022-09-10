@@ -11,6 +11,20 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 // or start the project to get graphql.ts file
 @Module({
   imports: [
+    // code first approach
+    // GraphQLModule.forRoot<ApolloDriverConfig>({
+    //   driver: ApolloDriver,
+    //   autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+    // //or
+    // the schema will be gen on fly in-memory
+    // autoSchemaFile: true,
+    // }),
+
+    //
+    //
+    // schema first approach
+    //
+    //
     // for graphql playground
     // GraphQLModule.forRoot<ApolloDriverConfig>({
     //   driver: ApolloDriver,
@@ -27,7 +41,10 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
       typePaths: ['./**/*.{gql,graphql}'],
       definitions: {
         path: join(process.cwd(), 'src/graphql.ts'),
+        outputAs: 'class',
+        emitTypenameField: true,
       },
+
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     AuthorPostsModule,

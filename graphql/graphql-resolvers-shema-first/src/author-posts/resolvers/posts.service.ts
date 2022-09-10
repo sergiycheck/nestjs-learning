@@ -49,25 +49,25 @@ export class PostsService {
   }
   findOne(id: number) {
     const p = posts.find((p) => p.id === id);
-    if (!p) return new NotFoundException(`post with id ${id} was not found`);
+    if (!p) throw new NotFoundException(`post with id ${id} was not found`);
     return p;
   }
   update(id: number, updatePostInput: UpdatePostInput) {
-    const p = this.findOne(id) as Post;
+    const p = this.findOne(id);
     posts[p.id] = {
       ...p,
       ...updatePostInput,
     };
 
-    return p;
+    return p[p.id];
   }
   remove(id: number) {
     const p = this.findOne(id);
-    posts.filter((p) => p.id !== id);
+    posts.splice(posts.indexOf(p), 1);
     return p;
   }
   upvoteById({ id }: { id: number }) {
-    const post = this.findOne(id) as Post;
+    const post = this.findOne(id);
     post.votes++;
     return post;
   }

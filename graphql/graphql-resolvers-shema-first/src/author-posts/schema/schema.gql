@@ -26,6 +26,7 @@ input UpdatePostInput {
 type Query {
   author(id: Int!): Author
   allPosts: [Post]!
+  getAuthorsByArgs(firstName: String, lastName: String = ""): [Author]
 }
 
 type Mutation {

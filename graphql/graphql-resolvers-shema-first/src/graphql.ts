@@ -7,41 +7,54 @@
 
 /* tslint:disable */
 /* eslint-disable */
-export interface CreatePostInput {
+
+export class CreatePostInput {
     title: string;
     authorId: number;
 }
 
-export interface UpdatePostInput {
+export class UpdatePostInput {
     id: number;
     title: string;
     authorId: number;
 }
 
-export interface Author {
+export class Author {
+    __typename?: 'Author';
     id: number;
     firstName?: Nullable<string>;
     lastName?: Nullable<string>;
     posts?: Nullable<Nullable<Post>[]>;
 }
 
-export interface Post {
+export class Post {
+    __typename?: 'Post';
     id: number;
     title: string;
     votes?: Nullable<number>;
     authorId: number;
 }
 
-export interface IQuery {
-    author(id: number): Nullable<Author> | Promise<Nullable<Author>>;
-    allPosts(): Nullable<Post>[] | Promise<Nullable<Post>[]>;
+export abstract class IQuery {
+    __typename?: 'IQuery';
+
+    abstract author(id: number): Nullable<Author> | Promise<Nullable<Author>>;
+
+    abstract allPosts(): Nullable<Post>[] | Promise<Nullable<Post>[]>;
+
+    abstract getAuthorsByArgs(firstName?: Nullable<string>, lastName?: Nullable<string>): Nullable<Nullable<Author>[]> | Promise<Nullable<Nullable<Author>[]>>;
 }
 
-export interface IMutation {
-    createPost(input: CreatePostInput): Post | Promise<Post>;
-    update(input: UpdatePostInput): Post | Promise<Post>;
-    upvotePost(postId: number): Post | Promise<Post>;
-    deletePost(postId: number): Post | Promise<Post>;
+export abstract class IMutation {
+    __typename?: 'IMutation';
+
+    abstract createPost(input: CreatePostInput): Post | Promise<Post>;
+
+    abstract update(input: UpdatePostInput): Post | Promise<Post>;
+
+    abstract upvotePost(postId: number): Post | Promise<Post>;
+
+    abstract deletePost(postId: number): Post | Promise<Post>;
 }
 
 type Nullable<T> = T | null;
