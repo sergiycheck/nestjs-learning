@@ -19,6 +19,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
       subscriptions: {
+        'subscriptions-transport-ws': true,
         'graphql-ws': true,
       },
     }),

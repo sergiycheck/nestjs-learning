@@ -60,7 +60,7 @@ export abstract class IMutation {
 export abstract class ISubscription {
     __typename?: 'ISubscription';
 
-    abstract createdPost(): Post | Promise<Post>;
+    abstract createdPost(input: string): Post | Promise<Post>;
 }
 
 type Nullable<T> = T | null;

@@ -1,3 +1,5 @@
+import { REDIS_PUB_SUB } from './../constants';
+import { RedisPubSub } from 'graphql-redis-subscriptions';
 import {
   CreatePostInput,
   Author,
@@ -17,12 +19,12 @@ import {
 import { AuthorsService } from './authors.service';
 import { PostsService } from './posts.service';
 import GetAuthorArgs from './dtos/get-author.args';
-import redisPubSub from './subscription';
-import { CREATED_POST_TOPIC } from './constants';
+import { Inject } from '@nestjs/common';
 
 @Resolver('Author')
 export class AuthorsResolver {
   constructor(
+    @Inject(REDIS_PUB_SUB) private redisPubSub: RedisPubSub,
     private authorsService: AuthorsService,
     private postsService: PostsService,
   ) {}
@@ -30,13 +32,28 @@ export class AuthorsResolver {
   @Mutation()
   createPost(@Args('input') input: CreatePostInput) {
     const created = this.postsService.create(input);
-    redisPubSub.publish(CREATED_POST_TOPIC, { created });
+    this.redisPubSub.publish('createdPost', { createdPost: created });
     return created;
   }
 
-  @Subscription(() => Post)
-  createdPost() {
-    return redisPubSub.asyncIterator(CREATED_POST_TOPIC);
+  @Subscription(() => Post, {
+    name: 'createdPost',
+    resolve(this: AuthorsResolver, value: { createdPost: Post }) {
+      return value.createdPost;
+    },
+    filter(
+      this: AuthorsResolver,
+      payload: { createdPost: Post },
+      args: { input: string },
+    ) {
+      return payload.createdPost.title.startsWith(args.input);
+    },
+  })
+  // payload is the payload published by redisPubSub
+  // args is the arguments provided to the createdPostSubscription
+  // method
+  createdPostSubscription(@Args('input') input: string) {
+    return this.redisPubSub.asyncIterator('createdPost');
   }
 
   @Mutation()

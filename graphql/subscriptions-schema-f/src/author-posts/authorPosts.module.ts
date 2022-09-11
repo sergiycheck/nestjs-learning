@@ -2,9 +2,16 @@ import { Module } from '@nestjs/common';
 import { AuthorsService } from './resolvers/authors.service';
 import { AuthorsResolver } from './resolvers/author.resolver';
 import { PostsService } from './resolvers/posts.service';
+import { REDIS_PUB_SUB } from './constants';
+import redisPubSub from './subscription';
 
 @Module({
-  providers: [AuthorsResolver, PostsService, AuthorsService],
+  providers: [
+    AuthorsResolver,
+    PostsService,
+    AuthorsService,
+    { provide: REDIS_PUB_SUB, useValue: redisPubSub },
+  ],
 })
 export class AuthorPostsModule {}
 
