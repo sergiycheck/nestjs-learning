@@ -1,0 +1,1 @@
+export const CREATED_POST_TOPIC = 'CREATED_POST';
