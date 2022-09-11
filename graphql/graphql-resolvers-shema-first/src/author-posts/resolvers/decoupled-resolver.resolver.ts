@@ -1,4 +1,4 @@
-import { CreatePostInput, Author } from './../../graphql';
+import { CreatePostInput, Author, UpdatePostInput } from './../../graphql';
 import {
   Args,
   Int,
@@ -20,9 +20,13 @@ export class AuthorsResolver {
   ) {}
 
   @Mutation()
-  createPost(@Args('input') createPostInput: CreatePostInput) {
-    console.log('createPostInput', createPostInput);
-    return this.postsService.create(createPostInput);
+  createPost(@Args('input') input: CreatePostInput) {
+    return this.postsService.create(input);
+  }
+
+  @Mutation()
+  update(@Args('input') input: UpdatePostInput) {
+    return this.postsService.update(input);
   }
 
   @Query('allPosts')
@@ -38,6 +42,7 @@ export class AuthorsResolver {
   @Query('getAuthorsByArgs')
   async getAuthorsByArgs(
     @Args() args: GetAuthorArgs, // TODO: args object is empty
+    // when the global validation pipe is configured
     // @Args('firstName', { nullable: true }) firstName?: string,
     // @Args('lastName', { defaultValue: '' }) lastName?: string,
   ) {

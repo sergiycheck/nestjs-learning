@@ -5,30 +5,34 @@ type FindAllParams = {
   authorId?: number;
 };
 
-export const posts: Post[] = [
-  {
-    id: 1,
-    title: 'post title 1',
-    votes: 3,
-    authorId: 1,
-  },
-  {
-    id: 2,
-    title: 'post title 2',
-    votes: 5,
-    authorId: 1,
-  },
-  {
-    id: 3,
-    title: 'post title 3',
-    votes: 1,
-    authorId: 2,
-  },
-];
-
 @Injectable()
 export class PostsService {
+  public posts: Post[];
+  constructor() {
+    this.posts = [
+      {
+        id: 1,
+        title: 'post title 1',
+        votes: 3,
+        authorId: 1,
+      },
+      {
+        id: 2,
+        title: 'post title 2',
+        votes: 5,
+        authorId: 1,
+      },
+      {
+        id: 3,
+        title: 'post title 3',
+        votes: 1,
+        authorId: 2,
+      },
+    ];
+  }
+
   create(createPostInput: CreatePostInput) {
+    const { posts } = this;
     const post: Post = {
       ...createPostInput,
       id: posts[posts.length - 1].id + 1,
@@ -39,31 +43,32 @@ export class PostsService {
   }
 
   findAll() {
-    return posts;
+    return this.posts;
   }
 
   findAllByAuthor(params?: FindAllParams) {
+    const { posts } = this;
     if (params?.authorId)
       return posts.filter((p) => p.authorId === params.authorId);
     return posts;
   }
   findOne(id: number) {
-    const p = posts.find((p) => p.id === id);
+    const p = this.posts.find((p) => p.id === id);
     if (!p) throw new NotFoundException(`post with id ${id} was not found`);
     return p;
   }
-  update(id: number, updatePostInput: UpdatePostInput) {
-    const p = this.findOne(id);
-    posts[p.id] = {
+  update(update: UpdatePostInput) {
+    const p = this.findOne(update.id);
+    this.posts[p.id] = {
       ...p,
-      ...updatePostInput,
+      ...update,
     };
 
-    return p[p.id];
+    return this.posts[p.id];
   }
   remove(id: number) {
     const p = this.findOne(id);
-    posts.splice(posts.indexOf(p), 1);
+    this.posts.splice(this.posts.indexOf(p), 1);
     return p;
   }
   upvoteById({ id }: { id: number }) {
