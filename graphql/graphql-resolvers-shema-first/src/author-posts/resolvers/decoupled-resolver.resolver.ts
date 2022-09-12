@@ -40,13 +40,7 @@ export class AuthorsResolver {
   }
 
   @Query('getAuthorsByArgs')
-  async getAuthorsByArgs(
-    @Args() args: GetAuthorArgs, // TODO: args object is empty
-    // when the global validation pipe is configured
-    // @Args('firstName', { nullable: true }) firstName?: string,
-    // @Args('lastName', { defaultValue: '' }) lastName?: string,
-  ) {
-    // const args: GetAuthorArgs = { firstName, lastName };
+  async getAuthorsByArgs(@Args() args: GetAuthorArgs) {
     return this.authorsService.getAuthorsByArgs(args);
   }
 
