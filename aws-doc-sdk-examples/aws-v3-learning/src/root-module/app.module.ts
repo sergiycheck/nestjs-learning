@@ -1,3 +1,4 @@
+import { AwsSnsModule } from './../aws-sns/aws-sns.module';
 import { AwsCloudWatchModule } from './../aws-cloud-watch/aws-cloud-watch.module';
 import { AllExceptionsFilter } from './../common/filters/all-exceptions.filter';
 import { S3ManagerModule } from './../aws-s3/s3-manager.module';
@@ -28,6 +29,7 @@ import { AwsDynamoDbModule } from '../aws-dynamo-db/aws-dynamo-db.module';
     AwsLambdaModule,
     AwsCloudWatchModule,
     AwsDynamoDbModule,
+    AwsSnsModule,
   ],
   controllers: [AppController],
   providers: [
