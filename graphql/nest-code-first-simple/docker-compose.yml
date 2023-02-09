@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  graphql-nest-todo:
+    build:
+      context: .
+    ports:
+      - 3071:3070
+    volumes:
+      - ./:/home/node/back-end-app
+    restart: always
+    environment:
+      - NODE_ENV=development
+      - PORT=3070
+
+      - MONGODB_PORT=27017
+      - MONGODB_USERNAME=serhii
+      - MONGODB_PASSWORD=serhii_pass
+      - MONGODB_HOST=mongo_db
+      - MONGODB_NAME=nestjs-graphql-todo
+      - MONGODB_AUTH_MECHANISM=DEFAULT
+      - MONGODB_AUTH_SOURCE=admin
+
+    depends_on:
+      - mongo_db
+    command: sh -c 'yarn install && yarn run start:debug'
+
+  mongo_db:
+    image: mongo
+    restart: always
+    ports:
+      - 27020:27017
+    volumes:
+      - $PWD/mongo_datadir:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: serhii
+      MONGO_INITDB_ROOT_PASSWORD: serhii_pass
+      MONGO_INITDB_DATABASE: nestjs-graphql-todo

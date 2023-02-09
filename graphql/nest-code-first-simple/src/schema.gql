@@ -4,11 +4,7 @@
 
 type Todo {
   """Int id of todo"""
-  id: Int!
-  name: String!
-  createdAt: Float!
-  isDone: Boolean
-  tag: String
+  id: ID!
 }
 
 type Query {
@@ -25,7 +21,7 @@ type Mutation {
 
 input CreateTodoInput {
   name: String!
-  isDone: Boolean
+  isDone: Boolean!
   tag: String
 }
 

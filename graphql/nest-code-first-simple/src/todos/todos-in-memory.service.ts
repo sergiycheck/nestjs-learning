@@ -10,40 +10,35 @@ export const items: { [key: number]: Todo } = {
     name: 'todo 1',
     isDone: false,
     tag: 'cooking',
-    createdAt: Date.now(),
   },
   2: {
     id: 2,
     name: 'todo 2',
     isDone: false,
     tag: 'cooking, eating',
-    createdAt: Date.now(),
   },
   3: {
     id: 3,
     name: 'do something',
     isDone: false,
     tag: 'cycling',
-    createdAt: Date.now(),
   },
   4: {
     id: 4,
     name: 'do smth usefull',
     isDone: false,
     tag: 'coding',
-    createdAt: Date.now(),
   },
 };
 
 @Injectable()
-export class TodosService {
+export class TodosInMemoryService {
   create(input: CreateTodoInput) {
     const item: Todo = {
       ...input,
       id: Object.keys(items).length + 1,
       tag: input.tag ?? null,
       isDone: input.isDone ?? false,
-      createdAt: Date.now(),
     };
     items[item.id] = item;
     return items[item.id];

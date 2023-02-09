@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { TodosService } from './todos.service';
+import { TodosInMemoryService } from './todos-in-memory.service';
 import { Todo } from './entities/todo.entity';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
@@ -7,7 +7,7 @@ import GetTodosArgs from './dto/get-todos.args';
 
 @Resolver(() => Todo)
 export class TodosResolver {
-  constructor(private readonly todosService: TodosService) {}
+  constructor(private readonly todosService: TodosInMemoryService) {}
 
   @Mutation(() => Todo)
   createTodo(@Args('createTodoInput') createTodoInput: CreateTodoInput) {

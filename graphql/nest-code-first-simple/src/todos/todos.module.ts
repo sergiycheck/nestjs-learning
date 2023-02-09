@@ -1,8 +1,27 @@
 import { Module } from '@nestjs/common';
-import { TodosService } from './todos.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TodosInMemoryService } from './todos-in-memory.service';
 import { TodosResolver } from './todos.resolver';
+import { TodoModel, TodoSchema } from './entities/todo.mongo-entity ';
+import { TodosMongoMapService } from './todos-map.service';
 
 @Module({
-  providers: [TodosResolver, TodosService]
+  imports: [
+    MongooseModule.forFeatureAsync([
+      {
+        name: TodoModel.name,
+        useFactory: () => {
+          const schema = TodoSchema;
+          return schema;
+        },
+      },
+    ]),
+  ],
+  providers: [
+    TodosResolver,
+    TodosInMemoryService,
+    TodosMongoMapService,
+    TodosMongoMapService,
+  ],
 })
 export class TodosModule {}
