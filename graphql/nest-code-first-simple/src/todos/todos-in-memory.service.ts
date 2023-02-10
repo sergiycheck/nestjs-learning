@@ -6,25 +6,25 @@ import { Todo } from './entities/todo.entity';
 
 export const items: { [key: number]: Todo } = {
   1: {
-    id: 1,
+    id: '1',
     name: 'todo 1',
     isDone: false,
     tag: 'cooking',
   },
   2: {
-    id: 2,
+    id: '2',
     name: 'todo 2',
     isDone: false,
     tag: 'cooking, eating',
   },
   3: {
-    id: 3,
+    id: '3',
     name: 'do something',
     isDone: false,
     tag: 'cycling',
   },
   4: {
-    id: 4,
+    id: '4',
     name: 'do smth usefull',
     isDone: false,
     tag: 'coding',
@@ -36,7 +36,7 @@ export class TodosInMemoryService {
   create(input: CreateTodoInput) {
     const item: Todo = {
       ...input,
-      id: Object.keys(items).length + 1,
+      id: `${Object.keys(items).length + 1}`,
       tag: input.tag ?? null,
       isDone: input.isDone ?? false,
     };

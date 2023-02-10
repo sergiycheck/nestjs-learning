@@ -6,6 +6,7 @@ import { UpdateTodoInput } from './dto/update-todo.input';
 import { TodoModel, TodoDocument } from './entities/todo.mongo-entity ';
 import { FindAllArgs } from './dto/findAll.args';
 import { TodosMongoMapService } from './todos-map.service';
+import GetTodosArgs from './dto/get-todos.args';
 
 @Injectable()
 export class TodosMongoService {
@@ -52,5 +53,16 @@ export class TodosMongoService {
 
   async remove(id: string) {
     return await this.model.deleteOne({ _id: id });
+  }
+
+  async getTodosByArgs(args: GetTodosArgs) {
+    // return Object.values(items).filter(
+    //   (a) => a.name.startsWith(args.name) || a.tag.startsWith(args.tag),
+    // );
+
+    const arrQuery = await this.model.find({
+      $or: [{ name: { $regex: args.name } }, { tag: { $regex: args.tag } }],
+    });
+    return arrQuery.map((o) => this.todosMapService.mapResponse(o.toObject()));
   }
 }

@@ -1,40 +1,41 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { TodosInMemoryService } from './todos-in-memory.service';
-import { Todo } from './entities/todo.entity';
+import { FindAllArgs } from './dto/findAll.args';
+import { TodosMongoService } from './todos-mongo.service';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import GetTodosArgs from './dto/get-todos.args';
+import { ResponseTodo } from './dto/responses.dto';
 
-@Resolver(() => Todo)
+@Resolver(() => ResponseTodo)
 export class TodosResolver {
-  constructor(private readonly todosService: TodosInMemoryService) {}
+  constructor(private readonly todosMongoService: TodosMongoService) {}
 
-  @Mutation(() => Todo)
+  @Mutation(() => ResponseTodo)
   createTodo(@Args('createTodoInput') createTodoInput: CreateTodoInput) {
-    return this.todosService.create(createTodoInput);
+    return this.todosMongoService.create(createTodoInput);
   }
 
-  @Query(() => [Todo], { name: 'todos' })
-  findAll() {
-    return this.todosService.findAll();
+  @Query(() => [ResponseTodo], { name: 'todos' })
+  findAll(@Args() args: FindAllArgs) {
+    return this.todosMongoService.findAll(args);
   }
 
-  @Query(() => Todo, { name: 'todo' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.todosService.findOne(id);
+  @Query(() => ResponseTodo, { name: 'todo' })
+  findOne(@Args('id', { type: () => String }) id: string) {
+    return this.todosMongoService.findOne(id);
   }
 
-  @Mutation(() => Todo)
+  @Mutation(() => ResponseTodo)
   updateTodo(@Args('updateTodoInput') updateTodoInput: UpdateTodoInput) {
-    return this.todosService.update(updateTodoInput.id, updateTodoInput);
+    return this.todosMongoService.update(updateTodoInput.id, updateTodoInput);
   }
 
-  @Mutation(() => Todo)
-  removeTodo(@Args('id', { type: () => Int }) id: number) {
-    return this.todosService.remove(id);
+  @Mutation(() => ResponseTodo)
+  removeTodo(@Args('id', { type: () => String }) id: string) {
+    return this.todosMongoService.remove(id);
   }
 
-  @Query(() => [Todo])
+  @Query(() => [ResponseTodo])
   async getTodosByArgs(
     // TODO: @ArgsType() is not working with code first and schema first approach
     // @Args() args: GetTodosArgs,
@@ -42,6 +43,6 @@ export class TodosResolver {
     @Args('name', { nullable: true }) name?: string,
   ) {
     const args: GetTodosArgs = { name, tag };
-    return this.todosService.getTodosByArgs(args);
+    return this.todosMongoService.getTodosByArgs(args);
   }
 }

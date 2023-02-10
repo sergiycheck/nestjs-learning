@@ -2,21 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Todo {
-  """Int id of todo"""
+type ResponseTodo {
+  """String id of todo"""
   id: ID!
+  name: String!
+  isDone: Boolean
+  tag: String
 }
 
 type Query {
-  todos: [Todo!]!
-  todo(id: Int!): Todo!
-  getTodosByArgs(tag: String = "", name: String): [Todo!]!
+  todos(page: Float!, limit: Float!): [ResponseTodo!]!
+  todo(id: String!): ResponseTodo!
+  getTodosByArgs(tag: String = "", name: String): [ResponseTodo!]!
 }
 
 type Mutation {
-  createTodo(createTodoInput: CreateTodoInput!): Todo!
-  updateTodo(updateTodoInput: UpdateTodoInput!): Todo!
-  removeTodo(id: Int!): Todo!
+  createTodo(createTodoInput: CreateTodoInput!): ResponseTodo!
+  updateTodo(updateTodoInput: UpdateTodoInput!): ResponseTodo!
+  removeTodo(id: String!): ResponseTodo!
 }
 
 input CreateTodoInput {
@@ -29,5 +32,5 @@ input UpdateTodoInput {
   name: String
   isDone: Boolean
   tag: String
-  id: Int!
+  id: String!
 }

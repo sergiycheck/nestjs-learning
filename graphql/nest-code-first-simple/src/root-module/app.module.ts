@@ -9,6 +9,8 @@ import { AppService } from './app.service';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { MongooseModule } from '@nestjs/mongoose';
 import Joi from 'joi';
+import { AllExceptionsFilter } from 'src/common/filters/all-exceptions.filter';
+import { APP_FILTER } from '@nestjs/core';
 
 //zod required additional configuration
 
@@ -72,6 +74,10 @@ import Joi from 'joi';
     TodosModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    AllExceptionsFilter,
+    { provide: APP_FILTER, useExisting: AllExceptionsFilter },
+  ],
 })
 export class AppModule {}

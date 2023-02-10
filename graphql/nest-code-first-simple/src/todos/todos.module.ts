@@ -4,6 +4,7 @@ import { TodosInMemoryService } from './todos-in-memory.service';
 import { TodosResolver } from './todos.resolver';
 import { TodoModel, TodoSchema } from './entities/todo.mongo-entity ';
 import { TodosMongoMapService } from './todos-map.service';
+import { TodosMongoService } from './todos-mongo.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { TodosMongoMapService } from './todos-map.service';
   providers: [
     TodosResolver,
     TodosInMemoryService,
-    TodosMongoMapService,
+    TodosMongoService,
     TodosMongoMapService,
   ],
 })

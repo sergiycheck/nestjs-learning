@@ -1,13 +1,14 @@
+import { ObjectType } from '@nestjs/graphql';
 import { Todo } from '../entities/todo.entity';
 
-export type ResponseTodo = Omit<Todo, '_id'> & {
-  id: string;
-
+@ObjectType()
+export class ResponseTodo extends Todo {
   createdAt: string;
   updatedAt: string;
-};
+}
 
-export type RemoveResponse = {
+@ObjectType()
+export class RemoveResponse {
   acknowledged: boolean;
   deletedCount: number;
-};
+}

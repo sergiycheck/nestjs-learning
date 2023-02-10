@@ -1,8 +1,13 @@
-import { ObjectType, Field, ID, OmitType } from '@nestjs/graphql';
-import { TodoModel } from './todo.mongo-entity ';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
-export class Todo extends OmitType(TodoModel, ['_id'] as const) {
-  @Field(() => ID, { description: 'Int id of todo' })
-  id: number;
+export class Todo {
+  @Field(() => ID, { description: 'String id of todo' })
+  id: string;
+
+  name: string;
+
+  isDone?: boolean;
+
+  tag?: string;
 }
