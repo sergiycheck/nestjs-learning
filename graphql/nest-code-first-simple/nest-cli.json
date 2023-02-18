@@ -11,7 +11,8 @@
             ".input.ts",
             ".args.ts",
             ".entity.ts",
-            ".model.ts"
+            ".model.ts",
+            ".dto.ts"
           ],
           "introspectComments": true
         }

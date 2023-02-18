@@ -4,7 +4,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import GetTodosArgs from './dto/get-todos.args';
-import { ResponseTodo } from './dto/responses.dto';
+import { ResponseTodo, RemoveResponse } from './dto/responses.dto';
 
 @Resolver(() => ResponseTodo)
 export class TodosResolver {
@@ -30,7 +30,7 @@ export class TodosResolver {
     return this.todosMongoService.update(updateTodoInput.id, updateTodoInput);
   }
 
-  @Mutation(() => ResponseTodo)
+  @Mutation(() => RemoveResponse)
   removeTodo(@Args('id', { type: () => String }) id: string) {
     return this.todosMongoService.remove(id);
   }

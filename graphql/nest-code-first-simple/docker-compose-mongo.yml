@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  mongo_db:
+    image: mongo
+    restart: always
+    ports:
+      - 27020:27017
+    volumes:
+      - $PWD/mongo_datadir:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: serhii
+      MONGO_INITDB_ROOT_PASSWORD: serhii_pass
+      MONGO_INITDB_DATABASE: nestjs-graphql-todo
