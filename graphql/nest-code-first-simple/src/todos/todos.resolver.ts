@@ -1,10 +1,10 @@
-import { FindAllArgs } from './dto/findAll.args';
+import { FindAllArgs, GetPaginatedCursor } from './dto/findAll.args';
 import { TodosMongoService } from './todos-mongo.service';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import GetTodosArgs from './dto/get-todos.args';
-import { ResponseTodo, RemoveResponse } from './dto/responses.dto';
+import { ResponseTodo, RemoveResponse, PaginatedResponseTodo } from './dto/responses.dto';
 
 @Resolver(() => ResponseTodo)
 export class TodosResolver {
@@ -18,6 +18,13 @@ export class TodosResolver {
   @Query(() => [ResponseTodo], { name: 'todos' })
   findAll(@Args() args: FindAllArgs) {
     return this.todosMongoService.findAll(args);
+  }
+
+  @Query(() => PaginatedResponseTodo, {
+    name: 'queryCursorBasedPaginated',
+  })
+  queryCursorBasedPaginated(@Args() args: GetPaginatedCursor) {
+    return this.todosMongoService.queryCursorBasedPaginated(args);
   }
 
   @Query(() => ResponseTodo, { name: 'todo' })

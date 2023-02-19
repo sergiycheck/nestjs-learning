@@ -1,18 +1,29 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { LeanDocument, Model } from 'mongoose';
+import { InjectModel, InjectConnection } from '@nestjs/mongoose';
+import {
+  ProjectionType,
+  FilterQuery,
+  LeanDocument,
+  Model,
+  ObjectId,
+  Types,
+} from 'mongoose';
+
 import { CreateTodoInput } from './dto/create-todo.input';
 import { UpdateTodoInput } from './dto/update-todo.input';
 import { TodoModel, TodoDocument } from './entities/todo.mongo-entity ';
-import { FindAllArgs } from './dto/findAll.args';
+import { FindAllArgs, GetPaginatedCursor } from './dto/findAll.args';
 import { TodosMongoMapService } from './todos-map.service';
 import GetTodosArgs from './dto/get-todos.args';
+import { PaginatedResponseTodo } from './dto/responses.dto';
+import { Connection } from 'mongoose';
 
 @Injectable()
 export class TodosMongoService {
   constructor(
     @InjectModel(TodoModel.name) public model: Model<TodoDocument>,
     private readonly todosMapService: TodosMongoMapService,
+    @InjectConnection() private connection: Connection,
   ) {}
 
   async create(createTodoDto: CreateTodoInput) {
@@ -28,6 +39,84 @@ export class TodosMongoService {
     const skip = (dto.page - 1) * dto.limit;
     const arrQuery = await this.model.find({}).skip(skip).limit(dto.limit);
     return arrQuery.map((o) => this.todosMapService.mapResponse(o.toObject()));
+  }
+
+  async queryCursorBasedPaginated(
+    dto: GetPaginatedCursor,
+  ): Promise<PaginatedResponseTodo> {
+    const TodoCollectionName = 'todomodels';
+    const findAllCursorPaginatedQuery: FilterQuery<TodoDocument> = {};
+
+    const findAllCursorPaginatedProjection: ProjectionType<TodoDocument> = {
+      limit: dto.limit,
+    };
+
+    const { previousPageCursor, nextPageCursor } = dto;
+    if (previousPageCursor || nextPageCursor) {
+      findAllCursorPaginatedProjection.sort = { _id: -1 };
+    }
+    if (nextPageCursor) {
+      findAllCursorPaginatedQuery._id = { $gt: new Types.ObjectId(nextPageCursor) };
+      findAllCursorPaginatedProjection.sort._id = 1;
+    } else if (previousPageCursor) {
+      findAllCursorPaginatedQuery._id = { $lt: new Types.ObjectId(previousPageCursor) };
+    }
+
+    const arrQuery = (await this.connection.db
+      .collection(TodoCollectionName)
+      .find(findAllCursorPaginatedQuery, findAllCursorPaginatedProjection)
+      .toArray()) as TodoDocument[];
+
+    if (previousPageCursor) arrQuery.reverse();
+
+    let hasNextPage = false;
+    let hasPrevPage = false;
+    let lastItemId, firstItemId: ObjectId;
+
+    if (arrQuery.length) {
+      firstItemId = arrQuery[0]._id;
+      lastItemId = arrQuery[arrQuery.length - 1]._id;
+
+      const query: FilterQuery<TodoDocument> = { _id: { $gt: lastItemId } };
+      const nextPageResult = await this.connection.db
+        .collection(TodoCollectionName)
+        .find(query, {
+          limit: dto.limit,
+          sort: { _id: 1 },
+        })
+        .toArray();
+
+      hasNextPage = !!nextPageResult.length;
+
+      query._id = {
+        $lt: firstItemId,
+      };
+      const prevPageResult = await this.connection.db
+        .collection(TodoCollectionName)
+        .find(query, {
+          limit: dto.limit,
+          sort: { _id: -1 },
+        })
+        .toArray();
+      hasPrevPage = !!prevPageResult.length;
+    }
+
+    const mappedTodosToEdges = arrQuery.map((itemObject) => {
+      return {
+        cursor: itemObject._id.toString(),
+        node: this.todosMapService.mapResponse(itemObject),
+      };
+    });
+
+    return {
+      edges: mappedTodosToEdges,
+      pageInfo: {
+        previousPageCursor: firstItemId.toString(),
+        nextPageCursor: lastItemId.toString(),
+        hasPrevPage,
+        hasNextPage,
+      },
+    };
   }
 
   async findOne(id: string) {

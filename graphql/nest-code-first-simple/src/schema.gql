@@ -17,8 +17,26 @@ type RemoveResponse {
   deletedCount: Float!
 }
 
+type ResponseTodoEdge {
+  cursor: String!
+  node: ResponseTodo!
+}
+
+type ResponseTodoPageInfo {
+  previousPageCursor: String!
+  nextPageCursor: String!
+  hasPrevPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+type PaginatedResponseTodo {
+  edges: [ResponseTodoEdge!]
+  pageInfo: ResponseTodoPageInfo!
+}
+
 type Query {
-  todos(page: Float!, limit: Float!): [ResponseTodo!]!
+  todos(page: Int!, limit: Int!): [ResponseTodo!]!
+  queryCursorBasedPaginated(limit: Int!, previousPageCursor: String, nextPageCursor: String): PaginatedResponseTodo!
   todo(id: String!): ResponseTodo!
   getTodosByArgs(tag: String = "", name: String): [ResponseTodo!]!
 }
