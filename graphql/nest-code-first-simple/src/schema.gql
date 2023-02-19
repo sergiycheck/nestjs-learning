@@ -23,9 +23,9 @@ type ResponseTodoEdge {
 }
 
 type ResponseTodoPageInfo {
-  previousPageCursor: String!
-  nextPageCursor: String!
-  hasPrevPage: Boolean!
+  startCursor: String!
+  endCursor: String!
+  hasPreviousPage: Boolean!
   hasNextPage: Boolean!
 }
 

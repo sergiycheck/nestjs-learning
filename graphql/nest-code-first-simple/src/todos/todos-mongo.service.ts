@@ -111,9 +111,9 @@ export class TodosMongoService {
     return {
       edges: mappedTodosToEdges,
       pageInfo: {
-        previousPageCursor: firstItemId.toString(),
-        nextPageCursor: lastItemId.toString(),
-        hasPrevPage,
+        startCursor: firstItemId.toString(),
+        endCursor: lastItemId.toString(),
+        hasPreviousPage: hasPrevPage,
         hasNextPage,
       },
     };

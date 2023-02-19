@@ -28,9 +28,9 @@ interface IEdgeType<T> {
 export interface IPaginatedType<T> {
   edges: IEdgeType<T>[];
   pageInfo: {
-    previousPageCursor: string;
-    nextPageCursor: string;
-    hasPrevPage: boolean;
+    startCursor: string;
+    endCursor: string;
+    hasPreviousPage: boolean;
     hasNextPage: boolean;
   };
 }
@@ -48,13 +48,13 @@ export function Paginated<T>(classRef: Type<T>): Type<IPaginatedType<T>> {
   @ObjectType(`${classRef.name}PageInfo`)
   abstract class PageInfoType {
     @Field(() => String)
-    previousPageCursor: string;
+    startCursor: string;
 
     @Field(() => String)
-    nextPageCursor: string;
+    endCursor: string;
 
     @Field(() => Boolean)
-    hasPrevPage: boolean;
+    hasPreviousPage: boolean;
 
     @Field(() => Boolean)
     hasNextPage: boolean;
