@@ -49,17 +49,17 @@ export class TodosMongoService {
 
     const findAllCursorPaginatedProjection: ProjectionType<TodoDocument> = {
       limit: dto.limit,
+      sort: {
+        _id: -1,
+      },
     };
 
     const { previousPageCursor, nextPageCursor } = dto;
-    if (previousPageCursor || nextPageCursor) {
-      findAllCursorPaginatedProjection.sort = { _id: -1 };
-    }
     if (nextPageCursor) {
-      findAllCursorPaginatedQuery._id = { $gt: new Types.ObjectId(nextPageCursor) };
-      findAllCursorPaginatedProjection.sort._id = 1;
+      findAllCursorPaginatedQuery._id = { $lt: new Types.ObjectId(nextPageCursor) };
     } else if (previousPageCursor) {
-      findAllCursorPaginatedQuery._id = { $lt: new Types.ObjectId(previousPageCursor) };
+      findAllCursorPaginatedQuery._id = { $gt: new Types.ObjectId(previousPageCursor) };
+      findAllCursorPaginatedProjection.sort._id = 1;
     }
 
     const arrQuery = (await this.connection.db
@@ -77,25 +77,25 @@ export class TodosMongoService {
       firstItemId = arrQuery[0]._id;
       lastItemId = arrQuery[arrQuery.length - 1]._id;
 
-      const query: FilterQuery<TodoDocument> = { _id: { $gt: lastItemId } };
+      const query: FilterQuery<TodoDocument> = { _id: { $lt: lastItemId } };
       const nextPageResult = await this.connection.db
         .collection(TodoCollectionName)
         .find(query, {
           limit: dto.limit,
-          sort: { _id: 1 },
+          sort: { _id: -1 },
         })
         .toArray();
 
       hasNextPage = !!nextPageResult.length;
 
       query._id = {
-        $lt: firstItemId,
+        $gt: firstItemId,
       };
       const prevPageResult = await this.connection.db
         .collection(TodoCollectionName)
         .find(query, {
           limit: dto.limit,
-          sort: { _id: -1 },
+          sort: { _id: 1 },
         })
         .toArray();
       hasPrevPage = !!prevPageResult.length;
