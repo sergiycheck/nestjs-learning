@@ -21,8 +21,8 @@ export class RemoveResponse {
 }
 
 interface IEdgeType<T> {
-  cursor: string;
-  node: T;
+  cursor: string | null;
+  node: T | null;
 }
 
 export interface IPaginatedType<T> {
@@ -39,10 +39,10 @@ export function Paginated<T>(classRef: Type<T>): Type<IPaginatedType<T>> {
   @ObjectType(`${classRef.name}Edge`)
   abstract class EdgeType {
     @Field(() => String)
-    cursor: string;
+    cursor: string | null;
 
     @Field(() => classRef)
-    node: T;
+    node: T | null;
   }
 
   @ObjectType(`${classRef.name}PageInfo`)

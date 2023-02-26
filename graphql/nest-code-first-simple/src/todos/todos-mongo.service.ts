@@ -71,7 +71,8 @@ export class TodosMongoService {
 
     let hasNextPage = false;
     let hasPrevPage = false;
-    let lastItemId, firstItemId: ObjectId;
+    let lastItemId,
+      firstItemId = '';
 
     if (arrQuery.length) {
       firstItemId = arrQuery[0]._id;
@@ -101,12 +102,19 @@ export class TodosMongoService {
       hasPrevPage = !!prevPageResult.length;
     }
 
-    const mappedTodosToEdges = arrQuery.map((itemObject) => {
-      return {
-        cursor: itemObject._id.toString(),
-        node: this.todosMapService.mapResponse(itemObject),
-      };
-    });
+    const mappedTodosToEdges = arrQuery.length
+      ? arrQuery.map((itemObject) => {
+          return {
+            cursor: itemObject._id.toString(),
+            node: this.todosMapService.mapResponse(itemObject),
+          };
+        })
+      : [
+          {
+            cursor: null,
+            node: null,
+          },
+        ];
 
     return {
       edges: mappedTodosToEdges,
