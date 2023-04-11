@@ -10,6 +10,7 @@ import * as Joi from 'joi';
 import { APP_FILTER } from '@nestjs/core';
 import { AwsLambdaModule } from '../aws-lambda/aws-lambda.module';
 import { AwsDynamoDbModule } from '../aws-dynamo-db/aws-dynamo-db.module';
+import { AwsSqsModule } from 'src/aws-sqs/aws-sqs.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { AwsDynamoDbModule } from '../aws-dynamo-db/aws-dynamo-db.module';
     AwsCloudWatchModule,
     AwsDynamoDbModule,
     AwsSnsModule,
+    AwsSqsModule,
   ],
   controllers: [AppController],
   providers: [
